@@ -1,0 +1,15 @@
+C:\Users\91a04\OneDrive\文件\GitHub\screen_lock\bin\Debug\net7.0-windows\screen_lock.exe
+C:\Users\91a04\OneDrive\文件\GitHub\screen_lock\bin\Debug\net7.0-windows\screen_lock.deps.json
+C:\Users\91a04\OneDrive\文件\GitHub\screen_lock\bin\Debug\net7.0-windows\screen_lock.runtimeconfig.json
+C:\Users\91a04\OneDrive\文件\GitHub\screen_lock\bin\Debug\net7.0-windows\screen_lock.dll
+C:\Users\91a04\OneDrive\文件\GitHub\screen_lock\bin\Debug\net7.0-windows\screen_lock.pdb
+C:\Users\91a04\OneDrive\文件\GitHub\screen_lock\obj\Debug\net7.0-windows\screen_lock.csproj.AssemblyReference.cache
+C:\Users\91a04\OneDrive\文件\GitHub\screen_lock\obj\Debug\net7.0-windows\screen_lock.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\91a04\OneDrive\文件\GitHub\screen_lock\obj\Debug\net7.0-windows\screen_lock.AssemblyInfoInputs.cache
+C:\Users\91a04\OneDrive\文件\GitHub\screen_lock\obj\Debug\net7.0-windows\screen_lock.AssemblyInfo.cs
+C:\Users\91a04\OneDrive\文件\GitHub\screen_lock\obj\Debug\net7.0-windows\screen_lock.csproj.CoreCompileInputs.cache
+C:\Users\91a04\OneDrive\文件\GitHub\screen_lock\obj\Debug\net7.0-windows\screen_lock.dll
+C:\Users\91a04\OneDrive\文件\GitHub\screen_lock\obj\Debug\net7.0-windows\refint\screen_lock.dll
+C:\Users\91a04\OneDrive\文件\GitHub\screen_lock\obj\Debug\net7.0-windows\screen_lock.pdb
+C:\Users\91a04\OneDrive\文件\GitHub\screen_lock\obj\Debug\net7.0-windows\screen_lock.genruntimeconfig.cache
+C:\Users\91a04\OneDrive\文件\GitHub\screen_lock\obj\Debug\net7.0-windows\ref\screen_lock.dll
