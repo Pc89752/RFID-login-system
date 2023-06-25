@@ -13,3 +13,5 @@ C:\Users\91a04\OneDrive\文件\GitHub\screen_lock\obj\Debug\net7.0-windows\refin
 C:\Users\91a04\OneDrive\文件\GitHub\screen_lock\obj\Debug\net7.0-windows\screen_lock.pdb
 C:\Users\91a04\OneDrive\文件\GitHub\screen_lock\obj\Debug\net7.0-windows\screen_lock.genruntimeconfig.cache
 C:\Users\91a04\OneDrive\文件\GitHub\screen_lock\obj\Debug\net7.0-windows\ref\screen_lock.dll
+C:\Users\91a04\OneDrive\文件\GitHub\screen_lock\bin\Debug\net7.0-windows\Newtonsoft.Json.dll
+C:\Users\91a04\OneDrive\文件\GitHub\screen_lock\obj\Debug\net7.0-windows\screen_lock.csproj.CopyComplete
