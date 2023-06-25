@@ -1,31 +1,46 @@
+using System;
+using System.Net.Http;
+
 namespace screen_lock
 {
     public class LoginForm : TableLayoutPanel
     {
+        private Label _lblUsername = new Label();
+        private TextBox _txtUsername = new TextBox();
+        private Label _lblPassword = new Label();
+        private TextBox _txtPassword = new TextBox();
+        private Button _btnLogin = new Button();
         public LoginForm()
         {
-            // Set explicit size for the TableLayoutPanel
-            Width = 250;
+            AutoSize = true;
 
-            Label lblUsername = new Label();
-            lblUsername.Text = "Username:";
-            Controls.Add(lblUsername, 0, 0);
+            _lblUsername.Text = "Username:";
+            _lblPassword.Text = "Password:";
+            _txtPassword.PasswordChar = '*';
+            _btnLogin.Text = "Submit";
 
-            TextBox txtUsername = new TextBox();
-            Controls.Add(txtUsername, 1, 0);
-
-            Label lblPassword = new Label();
-            lblPassword.Text = "Password:";
-            Controls.Add(lblPassword, 0, 1);
-
-            TextBox txtPassword = new TextBox();
-            txtPassword.PasswordChar = '*';
-            Controls.Add(txtPassword, 1, 1);
-
-            Button btnLogin = new Button();
-            btnLogin.Text = "Login";
-            Controls.Add(btnLogin, 1, 2);
+            Controls.Add(_lblUsername, 0, 0);
+            Controls.Add(_lblPassword, 0, 1);
+            Controls.Add(_txtUsername, 1, 0);
+            Controls.Add(_txtPassword, 1, 1);
+            Controls.Add(_btnLogin, 1, 2);
         }
+
+        public Button BtnLogin
+        {
+            get {return _btnLogin;}
+        }
+
+        public String Username
+        {
+            get {return _txtUsername.Text;}
+        }
+
+        public String Password
+        {
+            get {return _txtPassword.Text;}
+        }
+        
 
         // [STAThread]
         // static void Main()
