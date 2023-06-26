@@ -113,8 +113,6 @@ namespace screen_lock
                     _errorLabel.Text = "Connect failed!";
                     return;
                 }
-                
-                
 
                 // handle response
                 // JObject returnJson = new JObject();
