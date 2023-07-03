@@ -163,16 +163,16 @@ namespace screen_lock
             }
         }
 
-        [STAThread]
-        static void Main()
-        {
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
+        // [STAThread]
+        // static void Main()
+        // {
+        //     Application.EnableVisualStyles();
+        //     Application.SetCompatibleTextRenderingDefault(false);
 
-            // TODO: need an Url of server
-            LoginScreen loginScreen = new LoginScreen("http://127.0.0.1:5000/submit");
-            loginScreen.Padding = new Padding(50);
-            Application.Run(loginScreen);
-        }
+        //     // TODO: need an Url of server
+        //     LoginScreen loginScreen = new LoginScreen("http://127.0.0.1:5000/submit");
+        //     loginScreen.Padding = new Padding(50);
+        //     Application.Run(loginScreen);
+        // }
     }
 }
