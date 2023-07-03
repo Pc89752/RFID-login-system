@@ -33,19 +33,6 @@ namespace screen_lock
             // this.FormBorderStyle = FormBorderStyle.None;
             // this.TopMost = true;
 
-            TableLayoutPanel loginPanel = new TableLayoutPanel();
-            loginPanel.Dock = DockStyle.Top;
-            loginPanel.AutoSize = true;
-            loginPanel.RowStyles.Add(new RowStyle(SizeType.AutoSize));
-            loginPanel.RowStyles.Add(new RowStyle(SizeType.AutoSize));
-
-            // adding loginForm
-            _loginForm = new LoginForm();
-            _loginForm.BtnLogin.Click += onSubmit;
-            _loginForm.Anchor = AnchorStyles.None;
-            if(Screen.PrimaryScreen!=null)
-                _loginForm.Margin = new Padding(0, Screen.PrimaryScreen.Bounds.Height/4, 0, 0);
-
             // adding errorLabel
             _errorLabel.Font = new Font("Arial", 24,FontStyle.Bold);
             _errorLabel.Margin = new Padding(0, 30, 0, 0);
@@ -53,14 +40,44 @@ namespace screen_lock
             _errorLabel.Anchor = AnchorStyles.None;
             _errorLabel.TextAlign = ContentAlignment.MiddleCenter;
 
-            loginPanel.Controls.Add(_loginForm, 0, 0);
-            loginPanel.Controls.Add(_errorLabel, 0, 1);
-            loginPanel.SetColumnSpan(_errorLabel, 1);
-
             // Adding tabs
             TabControl tc = new TabControl();  
             tc.Name = "DynamicTabControl";
             tc.Dock = DockStyle.Fill;
+
+            // Adding RFID to the tab
+            TableLayoutPanel RFIDPanel = new TableLayoutPanel();
+            RFIDPanel.Dock = DockStyle.Top;
+            RFIDPanel.AutoSize = true;
+            RFIDPanel.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+            RFIDPanel.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+            TabPage RFIDPage = new TabPage();
+            RFIDPage.Name = "RFID";
+            RFIDPage.Text = "RFID";
+            RFIDReader RFID_reader = new RFIDReader();
+            RFID_reader.Anchor = AnchorStyles.None;
+            RFIDPanel.Controls.Add(RFID_reader);
+            RFIDPanel.Dock = DockStyle.Fill;
+            RFIDPanel.AutoSize = true;
+            RFIDPage.Controls.Add(RFIDPanel);
+            RFIDPage.Font = new Font("Verdana", 12);
+            tc.TabPages.Add(RFIDPage);
+
+            // adding loginForm
+            TableLayoutPanel loginPanel = new TableLayoutPanel();
+            loginPanel.Dock = DockStyle.Top;
+            loginPanel.AutoSize = true;
+            loginPanel.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+            loginPanel.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+            _loginForm = new LoginForm();
+            _loginForm.BtnLogin.Click += onSubmit;
+            _loginForm.Anchor = AnchorStyles.None;
+            if(Screen.PrimaryScreen!=null)
+                _loginForm.Margin = new Padding(0, Screen.PrimaryScreen.Bounds.Height/4, 0, 0);
+
+            loginPanel.Controls.Add(_loginForm, 0, 0);
+            loginPanel.Controls.Add(_errorLabel, 0, 1);
+            loginPanel.SetColumnSpan(_errorLabel, 1);
 
             // Adding login page to the tab
             TabPage loginPage = new TabPage();
@@ -70,27 +87,12 @@ namespace screen_lock
             loginPage.Font = new Font("Verdana", 12);
             tc.TabPages.Add(loginPage);
 
-            // // Adding walkway to the tab
-            // TabPage RFIDPage = new TabPage();
-            // RFIDPage.Name = "RFID";
-            // RFIDPage.Text = "RFID";
-            // Walkway walkway = new Walkway();
-            // walkway.Anchor = AnchorStyles.None;
-            // walkwayPanel.Controls.Add(walkway);
-            // walkwayPanel.Dock = DockStyle.Fill;
-            // walkwayPanel.AutoSize = true;
-            // walkwayPage.Controls.Add(walkwayPanel);
-            // walkwayPage.Font = new Font("Verdana", 12);
-            // tc.TabPages.Add(walkwayPage);
-
-            // Adding login page to the tab
+            // Adding walkway to the tab
             TableLayoutPanel walkwayPanel = new TableLayoutPanel();
             walkwayPanel.Dock = DockStyle.Top;
             walkwayPanel.AutoSize = true;
             walkwayPanel.RowStyles.Add(new RowStyle(SizeType.AutoSize));
             walkwayPanel.RowStyles.Add(new RowStyle(SizeType.AutoSize));
-
-            // Adding walkway to the tab
             TabPage walkwayPage = new TabPage();
             walkwayPage.Name = "walkway";
             walkwayPage.Text = "walkway";
