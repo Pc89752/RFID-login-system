@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Windows.Forms;
-using Newtonsoft.Json;
+﻿// using System;
+// using System.Collections.Generic;
+// using System.ComponentModel;
+// using System.Data;
+// using System.Drawing;
+// using System.Linq;
+// using System.Text;
+// using System.Windows.Forms;
+// using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace screen_lock
@@ -46,7 +46,6 @@ namespace screen_lock
                 _loginForm.Margin = new Padding(0, Screen.PrimaryScreen.Bounds.Height/4, 0, 0);
 
             // adding errorLabel
-            // _errorLabel.Text = "Form cannot be closed manually!";
             _errorLabel.Font = new Font("Arial", 24,FontStyle.Bold);
             _errorLabel.Margin = new Padding(0, 30, 0, 0);
             _errorLabel.AutoSize = true;
@@ -76,7 +75,7 @@ namespace screen_lock
             }
         }
 
-        private void onSubmit(object? sender, EventArgs e)
+        private async void onSubmit(object? sender, EventArgs e)
         {
             if(sender==null || _loginForm == null)
             {
@@ -104,8 +103,8 @@ namespace screen_lock
                 string? result = null;
                 try
                 {
-                    var response = client.PostAsync(_serverUri, new StringContent(payloadJson.ToString()));
-                    if(response!=null) result = response.ToString();
+                    var response = await client.PostAsync(_serverUri, new StringContent(payloadJson.ToString()));
+                    if(response!=null) result = await response.Content.ReadAsStringAsync();
                 }
                 catch (System.Exception)
                 {
@@ -118,8 +117,9 @@ namespace screen_lock
                 // JObject returnJson = new JObject();
                 if(result != null)
                 {
-                    JObject returnJson = JObject.Parse(result);
-                    int? status = (int?)returnJson["status"];
+                    // JObject returnJson = JObject.Parse(result);
+                    // int? status = (int?)returnJson["status"];
+                    int status = Int32.Parse(result);
                     switch (status)
                     {
                         // all normal
@@ -153,8 +153,8 @@ namespace screen_lock
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            // TODO: need an Uri of server
-            LoginScreen loginScreen = new LoginScreen("aaa");
+            // TODO: need an Url of server
+            LoginScreen loginScreen = new LoginScreen("http://127.0.0.1:5000/submit");
             loginScreen.Padding = new Padding(50);
             Application.Run(loginScreen);
         }

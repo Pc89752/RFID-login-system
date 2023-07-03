@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\91a04\\OneDrive\\文件\\GitHub\\screen_lock\\screen_lock.csproj": {}
+    "C:\\Users\\91a04\\OneDrive\\文件\\GitHub\\RFID-login-system\\screen_lock\\screen_lock.csproj": {}
   },
   "projects": {
-    "C:\\Users\\91a04\\OneDrive\\文件\\GitHub\\screen_lock\\screen_lock.csproj": {
+    "C:\\Users\\91a04\\OneDrive\\文件\\GitHub\\RFID-login-system\\screen_lock\\screen_lock.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\91a04\\OneDrive\\文件\\GitHub\\screen_lock\\screen_lock.csproj",
+        "projectUniqueName": "C:\\Users\\91a04\\OneDrive\\文件\\GitHub\\RFID-login-system\\screen_lock\\screen_lock.csproj",
         "projectName": "screen_lock",
-        "projectPath": "C:\\Users\\91a04\\OneDrive\\文件\\GitHub\\screen_lock\\screen_lock.csproj",
+        "projectPath": "C:\\Users\\91a04\\OneDrive\\文件\\GitHub\\RFID-login-system\\screen_lock\\screen_lock.csproj",
         "packagesPath": "C:\\Users\\91a04\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\91a04\\OneDrive\\文件\\GitHub\\screen_lock\\obj\\",
+        "outputPath": "C:\\Users\\91a04\\OneDrive\\文件\\GitHub\\RFID-login-system\\screen_lock\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\91a04\\AppData\\Roaming\\NuGet\\NuGet.Config"

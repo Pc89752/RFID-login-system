@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "nBsnSMBqyFJMS9qvG9EuaQQrDEzyQgR6CFqmw1i8cqN8nOlofocxxsrU5rinOKynQN3dQknD3CleBXdJ+ze8RA==",
+  "dgSpecHash": "tfr7sdI5iL2vy0Zllg06sP35Tw26i5g4Sb5mEtDCrayNyX9AddTeWcwRTsX9tlx5EpAtb1/IF9s4nOytUL2E5Q==",
   "success": true,
-  "projectFilePath": "C:\\Users\\91a04\\OneDrive\\文件\\GitHub\\screen_lock\\screen_lock.csproj",
+  "projectFilePath": "C:\\Users\\91a04\\OneDrive\\文件\\GitHub\\RFID-login-system\\screen_lock\\screen_lock.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\91a04\\.nuget\\packages\\newtonsoft.json\\13.0.3\\newtonsoft.json.13.0.3.nupkg.sha512"
   ],
