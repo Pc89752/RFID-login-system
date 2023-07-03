@@ -58,9 +58,9 @@ namespace screen_lock
             loginPanel.SetColumnSpan(_errorLabel, 1);
 
             // Adding tabs
-            TabControl dynamicTabControl = new TabControl();  
-            dynamicTabControl.Name = "DynamicTabControl";
-            dynamicTabControl.Dock = DockStyle.Fill;
+            TabControl tc = new TabControl();  
+            tc.Name = "DynamicTabControl";
+            tc.Dock = DockStyle.Fill;
 
             // Adding login page to the tab
             TabPage loginPage = new TabPage();
@@ -68,11 +68,42 @@ namespace screen_lock
             loginPage.Text = "user login";
             loginPage.Controls.Add(loginPanel);
             loginPage.Font = new Font("Verdana", 12);
-            dynamicTabControl.TabPages.Add(loginPage);
+            tc.TabPages.Add(loginPage);
+
+            // // Adding walkway to the tab
+            // TabPage RFIDPage = new TabPage();
+            // RFIDPage.Name = "RFID";
+            // RFIDPage.Text = "RFID";
+            // Walkway walkway = new Walkway();
+            // walkway.Anchor = AnchorStyles.None;
+            // walkwayPanel.Controls.Add(walkway);
+            // walkwayPanel.Dock = DockStyle.Fill;
+            // walkwayPanel.AutoSize = true;
+            // walkwayPage.Controls.Add(walkwayPanel);
+            // walkwayPage.Font = new Font("Verdana", 12);
+            // tc.TabPages.Add(walkwayPage);
+
+            // Adding login page to the tab
+            TableLayoutPanel walkwayPanel = new TableLayoutPanel();
+            walkwayPanel.Dock = DockStyle.Top;
+            walkwayPanel.AutoSize = true;
+            walkwayPanel.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+            walkwayPanel.RowStyles.Add(new RowStyle(SizeType.AutoSize));
 
             // Adding walkway to the tab
+            TabPage walkwayPage = new TabPage();
+            walkwayPage.Name = "walkway";
+            walkwayPage.Text = "walkway";
+            Walkway walkway = new Walkway();
+            walkway.Anchor = AnchorStyles.None;
+            walkwayPanel.Controls.Add(walkway);
+            walkwayPanel.Dock = DockStyle.Fill;
+            walkwayPanel.AutoSize = true;
+            walkwayPage.Controls.Add(walkwayPanel);
+            walkwayPage.Font = new Font("Verdana", 12);
+            tc.TabPages.Add(walkwayPage);
 
-            Controls.Add(dynamicTabControl);
+            Controls.Add(tc);
 
             // TODO: uncomment this line before officially run
             // this.FormClosing += preventUserClosing;
@@ -163,16 +194,16 @@ namespace screen_lock
             }
         }
 
-        // [STAThread]
-        // static void Main()
-        // {
-        //     Application.EnableVisualStyles();
-        //     Application.SetCompatibleTextRenderingDefault(false);
+        [STAThread]
+        static void Main()
+        {
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
 
-        //     // TODO: need an Url of server
-        //     LoginScreen loginScreen = new LoginScreen("http://127.0.0.1:5000/submit");
-        //     loginScreen.Padding = new Padding(50);
-        //     Application.Run(loginScreen);
-        // }
+            // TODO: need an Url of server
+            LoginScreen loginScreen = new LoginScreen("http://127.0.0.1:5000/submit");
+            loginScreen.Padding = new Padding(50);
+            Application.Run(loginScreen);
+        }
     }
 }

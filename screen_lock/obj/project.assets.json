@@ -55,26 +55,24 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\88696\\.nuget\\packages\\": {}
+    "C:\\Users\\91a04\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\88696\\OneDrive - 臺北市立大學\\桌面\\RFID-login-system\\screen_lock\\screen_lock.csproj",
+      "projectUniqueName": "C:\\Users\\91a04\\OneDrive\\文件\\GitHub\\RFID-login-system\\RFID-login-system\\screen_lock\\screen_lock.csproj",
       "projectName": "screen_lock",
-      "projectPath": "C:\\Users\\88696\\OneDrive - 臺北市立大學\\桌面\\RFID-login-system\\screen_lock\\screen_lock.csproj",
-      "packagesPath": "C:\\Users\\88696\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\88696\\OneDrive - 臺北市立大學\\桌面\\RFID-login-system\\screen_lock\\obj\\",
+      "projectPath": "C:\\Users\\91a04\\OneDrive\\文件\\GitHub\\RFID-login-system\\RFID-login-system\\screen_lock\\screen_lock.csproj",
+      "packagesPath": "C:\\Users\\91a04\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\91a04\\OneDrive\\文件\\GitHub\\RFID-login-system\\RFID-login-system\\screen_lock\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\88696\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        "C:\\Users\\91a04\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net7.0-windows"
       ],
       "sources": {
-        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -117,7 +115,7 @@
             "privateAssets": "none"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.400-preview.23274.1\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.305\\RuntimeIdentifierGraph.json"
       }
     }
   }
