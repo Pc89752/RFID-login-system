@@ -27,10 +27,11 @@ namespace screen_lock
 
             this.SuspendLayout();
 
-            this.ControlBox=false;
+            // XXX: testing
+            // this.ControlBox=false;
             this.WindowState = FormWindowState.Maximized;
-            this.FormBorderStyle = FormBorderStyle.None;
-            this.TopMost = true;
+            // this.FormBorderStyle = FormBorderStyle.None;
+            // this.TopMost = true;
 
             TableLayoutPanel loginPanel = new TableLayoutPanel();
             loginPanel.Dock = DockStyle.Top;
@@ -56,7 +57,22 @@ namespace screen_lock
             loginPanel.Controls.Add(_errorLabel, 0, 1);
             loginPanel.SetColumnSpan(_errorLabel, 1);
 
-            Controls.Add(loginPanel);
+            // Adding tabs
+            TabControl dynamicTabControl = new TabControl();  
+            dynamicTabControl.Name = "DynamicTabControl";
+            dynamicTabControl.Dock = DockStyle.Fill;
+
+            // Adding login page to the tab
+            TabPage loginPage = new TabPage();
+            loginPage.Name = "loginPage";
+            loginPage.Text = "user login";
+            loginPage.Controls.Add(loginPanel);
+            loginPage.Font = new Font("Verdana", 12);
+            dynamicTabControl.TabPages.Add(loginPage);
+
+            // Adding walkway to the tab
+
+            Controls.Add(dynamicTabControl);
 
             // TODO: uncomment this line before officially run
             // this.FormClosing += preventUserClosing;

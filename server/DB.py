@@ -31,6 +31,7 @@ def recreate_student_table(source_json_path):
     conn.commit()
     conn.close()
 
+
 if __name__ == "__main__":
     import json
     recreate_student_table(os.path.join(parent, "student_account.json"))
