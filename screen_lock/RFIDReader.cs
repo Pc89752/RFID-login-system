@@ -1,6 +1,7 @@
 using System;
 using System.Threading;
-using System.Net.Http;
+using System.Management;
+using System.Diagnostics;
 
 namespace screen_lock
 {
@@ -9,8 +10,11 @@ namespace screen_lock
         private Label _loadingChar = new Label();
         private int _loadingState = 0;
         private string[] _animationChars = {"-", "/", "|", "\\"};
-        private Button _btnLogin = new Button();
-        // private string _guid;
+        private static Thread? _thread;
+        public bool _isRunning = false;
+        private static string _password = "";
+        private string _exePath = @"..\NfcCode\NfcCode.exe";
+        private Process? _process;
         public RFIDReader()
         {
             AutoSize = true;
@@ -21,11 +25,6 @@ namespace screen_lock
             // _loadingChar.Dock = DockStyle.Fill;
             _loadingChar.Margin = new Padding(40);
             Controls.Add(_loadingChar, 0, 0);
-
-            _btnLogin.Text = "Bi";
-            _btnLogin.Dock = DockStyle.Fill;
-            // _btnLogin.Click += readRFID;
-            Controls.Add(_btnLogin, 0, 1);
         }
 
         private void spinLoadingChar()
@@ -36,11 +35,73 @@ namespace screen_lock
             _loadingChar.Text = _animationChars[_loadingState];
         }
 
-        public Button BtnLogin
+        public void stopReading()
         {
-            get {return _btnLogin;}
+            if(_thread!=null) _thread.Join();
+            if(!_isRunning) return;
+            if(_process == null) return;
+            // if(_process.HasExited) return;
+            // Wait for the thread to finish before exiting
+            try
+            {
+                using (Process P = new Process())
+                {
+                    P.StartInfo = new ProcessStartInfo()
+                    {
+                        FileName = "taskkill",
+                        CreateNoWindow = true,
+                        WindowStyle = ProcessWindowStyle.Hidden,
+                        Arguments = "/F /PID " + _process.Id
+                    };
+                    P.Start();
+                    P.WaitForExit(60000);
+                }
+            }
+            catch
+            {
+                using (Process P = new Process())
+                {
+                    P.StartInfo = new ProcessStartInfo()
+                    {
+                        FileName = "tskill",
+                        CreateNoWindow = true,
+                        WindowStyle = ProcessWindowStyle.Hidden,
+                        Arguments = "/PID " + _process.Id + " /A /V"
+                    };
+                    P.Start();
+                    P.WaitForExit(60000);
+                }
+            }
+            _isRunning = false;
+            Console.WriteLine("Stopped");
         }
 
+        public void startReading()
+        {
+            if(_isRunning) return;
+            _isRunning = true;
+            
+            _process = Process.Start(_exePath);
+            _process.WaitForInputIdle();
+            // _thread = new Thread(readInput);
+            // _thread.Start();
+            Console.WriteLine("Started");
+        }
+
+        private async static void readInput()
+        {
+            while(true)
+            {
+                string? inp = await Task.Run(() => Console.ReadLine());
+                if(inp!=null)
+                {
+                    _password = inp;
+                    Console.WriteLine(inp);
+                }
+                Thread.Sleep(1000);
+            }
+        }
+        
         // [STAThread]
         // static void Main()
         // {
@@ -48,7 +109,8 @@ namespace screen_lock
         //     Application.SetCompatibleTextRenderingDefault(false);
         //     Form mainForm = new Form();
         //     mainForm.FormBorderStyle = FormBorderStyle.FixedDialog;
-        //     mainForm.Controls.Add(new RFIDReader());
+        //     mainForm.Controls.Add(new RFIDReader())1106173973
+
         //     Application.Run(mainForm);
         // }
     }

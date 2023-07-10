@@ -7,7 +7,6 @@
 // using System.Text;
 // using System.Windows.Forms;
 // using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace screen_lock
 {
@@ -15,9 +14,9 @@ namespace screen_lock
     {
         private string? _serverUri;
         private LoginForm? _loginForm;
-        private Label _errorLabel = new Label();
-        private int _vid, _pid;
-        // private string _guid;
+        private static RFIDReader RFID_reader = new RFIDReader();
+        TabControl tc = new TabControl();
+        private int tc_index = 0;
         public LoginScreen(string serverUri)
         {
             InitializeComponent(serverUri);
@@ -35,17 +34,10 @@ namespace screen_lock
             // this.FormBorderStyle = FormBorderStyle.None;
             // this.TopMost = true;
 
-            // adding errorLabel
-            _errorLabel.Font = new Font("Arial", 24,FontStyle.Bold);
-            _errorLabel.Margin = new Padding(0, 30, 0, 0);
-            _errorLabel.AutoSize = true;
-            _errorLabel.Anchor = AnchorStyles.None;
-            _errorLabel.TextAlign = ContentAlignment.MiddleCenter;
-
             // Adding tabs
-            TabControl tc = new TabControl();  
             tc.Name = "DynamicTabControl";
             tc.Dock = DockStyle.Fill;
+            tc.SelectedIndexChanged += tab_indexChanged;
 
             // Adding RFID to the tab
             TableLayoutPanel RFIDPanel = new TableLayoutPanel();
@@ -56,8 +48,6 @@ namespace screen_lock
             TabPage RFIDPage = new TabPage();
             RFIDPage.Name = "RFID";
             RFIDPage.Text = "RFID";
-            RFIDReader RFID_reader = new RFIDReader(_vid, _pid);
-            // RFIDReader RFID_reader = new RFIDReader(_guid);
             RFID_reader.Anchor = AnchorStyles.None;
             RFIDPanel.Controls.Add(RFID_reader);
             RFIDPanel.Dock = DockStyle.Fill;
@@ -67,26 +57,16 @@ namespace screen_lock
             tc.TabPages.Add(RFIDPage);
 
             // adding loginForm
-            TableLayoutPanel loginPanel = new TableLayoutPanel();
-            loginPanel.Dock = DockStyle.Top;
-            loginPanel.AutoSize = true;
-            loginPanel.RowStyles.Add(new RowStyle(SizeType.AutoSize));
-            loginPanel.RowStyles.Add(new RowStyle(SizeType.AutoSize));
-            _loginForm = new LoginForm();
-            _loginForm.BtnLogin.Click += onSubmit;
+            _loginForm = new LoginForm(_serverUri);
             _loginForm.Anchor = AnchorStyles.None;
             if(Screen.PrimaryScreen!=null)
                 _loginForm.Margin = new Padding(0, Screen.PrimaryScreen.Bounds.Height/4, 0, 0);
-
-            loginPanel.Controls.Add(_loginForm, 0, 0);
-            loginPanel.Controls.Add(_errorLabel, 0, 1);
-            loginPanel.SetColumnSpan(_errorLabel, 1);
 
             // Adding login page to the tab
             TabPage loginPage = new TabPage();
             loginPage.Name = "loginPage";
             loginPage.Text = "user login";
-            loginPage.Controls.Add(loginPanel);
+            loginPage.Controls.Add(_loginForm);
             loginPage.Font = new Font("Verdana", 12);
             tc.TabPages.Add(loginPage);
 
@@ -114,6 +94,7 @@ namespace screen_lock
             // this.FormClosing += preventUserClosing;
             this.ResumeLayout(false);
             this.PerformLayout();
+            RFID_reader.startReading();
         }
 
         private void preventUserClosing(object? sender, FormClosingEventArgs e)
@@ -122,81 +103,20 @@ namespace screen_lock
             if (e.CloseReason == CloseReason.UserClosing)
             {
                 e.Cancel = true;
-                _errorLabel.ForeColor = Color.Red;
-                _errorLabel.Text = "Form cannot be closed manually!";
+                switch (tc_index)
+                {
+                    case 1:
+                        if(_loginForm!=null) _loginForm.errorMannualClosing();
+                        break;
+                }
             }
         }
 
-        private async void onSubmit(object? sender, EventArgs e)
+        private void tab_indexChanged(object? sender, EventArgs e)
         {
-            if(sender==null || _loginForm == null)
-            {
-                _errorLabel.ForeColor = Color.Orange;
-                _errorLabel.Text = "Major error!";
-                return;
-            }
-            if(_serverUri==null)
-            {
-                _errorLabel.ForeColor = Color.Orange;
-                _errorLabel.Text = "Invalid Uri!";
-                return;
-            }
-
-            using(var client = new HttpClient())
-            {
-                // Creating payload Json
-                JObject payloadJson =
-                    new JObject(
-                        new JProperty("account", _loginForm.Username),
-                        new JProperty("password", _loginForm.Password)
-                    );
-
-                // post login request
-                string? result = null;
-                try
-                {
-                    var response = await client.PostAsync(_serverUri, new StringContent(payloadJson.ToString()));
-                    if(response!=null) result = await response.Content.ReadAsStringAsync();
-                }
-                catch (System.Exception)
-                {
-                    _errorLabel.ForeColor = Color.Orange;
-                    _errorLabel.Text = "Connect failed!";
-                    return;
-                }
-
-                // handle response
-                // JObject returnJson = new JObject();
-                if(result != null)
-                {
-                    // JObject returnJson = JObject.Parse(result);
-                    // int? status = (int?)returnJson["status"];
-                    int status = Int32.Parse(result);
-                    switch (status)
-                    {
-                        // all normal
-                        case 0:
-                            _errorLabel.ForeColor = Color.Blue;
-                            _errorLabel.Text = "Success!";
-                            break;
-                        // Invalid username
-                        case 1:
-                            _errorLabel.ForeColor = Color.Red;
-                            _errorLabel.Text = "Invalid username!";
-                            break;
-                        // Invalid password
-                        case 2:
-                            _errorLabel.ForeColor = Color.Red;
-                            _errorLabel.Text = "Invalid password!";
-                            break;
-                    }
-                }
-                else
-                {
-                    _errorLabel.ForeColor = Color.Orange;
-                    _errorLabel.Text = "Connect failed!";
-                }
-            }
+            if(tc_index == 0) RFID_reader.stopReading();
+            tc_index = tc.SelectedIndex;
+            if(tc_index == 0) RFID_reader.startReading();
         }
 
         [STAThread]

@@ -1,5 +1,6 @@
 using System;
 using System.Net.Http;
+using Newtonsoft.Json.Linq;
 
 namespace screen_lock
 {
@@ -10,8 +11,12 @@ namespace screen_lock
         private Label _lblPassword = new Label();
         private TextBox _txtPassword = new TextBox();
         private Button _btnLogin = new Button();
-        public LoginForm()
+        private Label _errorLabel = new Label();
+        private string _serverUri;
+        public LoginForm(string serverUri)
+        // public LoginForm()
         {
+            _serverUri = serverUri;
             AutoSize = true;
 
             _lblUsername.Text = "Username:";
@@ -24,22 +29,106 @@ namespace screen_lock
             Controls.Add(_txtUsername, 1, 0);
             Controls.Add(_txtPassword, 1, 1);
             Controls.Add(_btnLogin, 1, 2);
+            Controls.Add(_errorLabel, 0, 3);
+            SetColumnSpan(_errorLabel, 2);
+
+            // onsubmit
+            Click += onSubmit;
+
+            // adding errorLabel
+            _errorLabel.Font = new Font("Arial", 24,FontStyle.Bold);
+            _errorLabel.Margin = new Padding(0, 30, 0, 0);
+            _errorLabel.AutoSize = true;
+            _errorLabel.Anchor = AnchorStyles.None;
+            _errorLabel.TextAlign = ContentAlignment.MiddleCenter;
         }
 
-        public Button BtnLogin
+        public void errorMannualClosing()
         {
-            get {return _btnLogin;}
+            _errorLabel.ForeColor = Color.Red;
+            _errorLabel.Text = "Form cannot be closed manually!";
         }
 
-        public String Username
+        public async void onSubmit(object? sender, EventArgs e)
         {
-            get {return _txtUsername.Text;}
+            if(_serverUri==null)
+            {
+                _errorLabel.ForeColor = Color.Orange;
+                _errorLabel.Text = "Invalid Uri!";
+                return;
+            }
+
+            using(var client = new HttpClient())
+            {
+                // Creating payload Json
+                JObject payloadJson =
+                    new JObject(
+                        new JProperty("account", _txtUsername.Text),
+                        new JProperty("password", _txtPassword.Text)
+                    );
+
+                // post login request
+                string? result = null;
+                try
+                {
+                    var response = await client.PostAsync(_serverUri, new StringContent(payloadJson.ToString()));
+                    if(response!=null) result = await response.Content.ReadAsStringAsync();
+                }
+                catch (System.Exception)
+                {
+                    _errorLabel.ForeColor = Color.Orange;
+                    _errorLabel.Text = "Connect failed!";
+                    return;
+                }
+
+                // handle response
+                // JObject returnJson = new JObject();
+                if(result != null)
+                {
+                    // JObject returnJson = JObject.Parse(result);
+                    // int? status = (int?)returnJson["status"];
+                    int status = Int32.Parse(result);
+                    switch (status)
+                    {
+                        // all normal
+                        case 0:
+                            _errorLabel.ForeColor = Color.Blue;
+                            _errorLabel.Text = "Success!";
+                            break;
+                        // Invalid username
+                        case 1:
+                            _errorLabel.ForeColor = Color.Red;
+                            _errorLabel.Text = "Invalid username!";
+                            break;
+                        // Invalid password
+                        case 2:
+                            _errorLabel.ForeColor = Color.Red;
+                            _errorLabel.Text = "Invalid password!";
+                            break;
+                    }
+                }
+                else
+                {
+                    _errorLabel.ForeColor = Color.Orange;
+                    _errorLabel.Text = "Connect failed!";
+                }
+            }
         }
 
-        public String Password
-        {
-            get {return _txtPassword.Text;}
-        }
+        // public Button BtnLogin
+        // {
+        //     get {return _btnLogin;}
+        // }
+
+        // public String Username
+        // {
+        //     get {return _txtUsername.Text;}
+        // }
+
+        // public String Password
+        // {
+        //     get {return _txtPassword.Text;}
+        // }
         
 
         // [STAThread]
