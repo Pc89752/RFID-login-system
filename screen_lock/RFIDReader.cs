@@ -1,8 +1,6 @@
 using System;
 using System.Threading;
 using System.Net.Http;
-using LibUsbDotNet;
-using LibUsbDotNet.Main;
 
 namespace screen_lock
 {
@@ -14,13 +12,8 @@ namespace screen_lock
         private Button _btnLogin = new Button();
         private int _vid, _pid;
         // private string _guid;
-        public RFIDReader(int vid, int pid)
-        // public RFIDReader(string guid)
+        public RFIDReader()
         {
-            // _guid = guid;
-            _vid = vid;
-            _pid = pid;
-
             AutoSize = true;
             _loadingChar.Text = _animationChars[_loadingState];
             _loadingChar.Font = new Font("Arial", 72);
