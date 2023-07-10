@@ -1,0 +1,9 @@
+{
+    "table_name": "arrivalList",
+    "cols": [
+        ["StudentID", "int"],
+        ["arrivalTime", "varchar(255)"],
+        ["leaveTime","varchar(255)"]
+    ]
+    
+}
