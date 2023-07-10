@@ -10,7 +10,6 @@ namespace screen_lock
         private int _loadingState = 0;
         private string[] _animationChars = {"-", "/", "|", "\\"};
         private Button _btnLogin = new Button();
-        private int _vid, _pid;
         // private string _guid;
         public RFIDReader()
         {
