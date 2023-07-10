@@ -1,0 +1,11 @@
+{
+    "table_name": "ComputerUsage",
+    "cols": [
+        ["ComputerID", "int"],
+        ["enterTime", "int"],
+        ["leaveTime", "int"]
+    ],
+    "rows": [
+       
+    ]
+}
