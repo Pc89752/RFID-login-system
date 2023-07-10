@@ -47,13 +47,43 @@ def insert_touples_into_database(ID,enter_time,leave_time):
         print("插入元組失敗:", str(e))
     
     # 關閉連線
- 
+
+def check_account(student_ID, password):
+    cursor = conn.cursor()
+
+    # 假設資料表名稱為 "your_table"
+    table_name = 'StudentAccount'
+
+    # 查詢資料庫中是否存在對應的資料
+    try:
+        query = f"SELECT * FROM {table_name} WHERE StudentID = ? AND Password = ?"
+        cursor.execute(query, (student_ID, password))   
+    except Exception as e:
+        print("尋找失敗:", str(e))
+
+    # 檢查是否存在結果
+    result = cursor.fetchone()
+
+    # 關閉連線
+    conn.close()
+
+    # 根據是否存在結果回傳 True 或 False
+    if result is not None:
+        return True
+    else:
+        return False
+
+    
 
 if __name__ == "__main__":
     import json
     recreate_table(os.path.join(parent, "student_account.json"))
     recreate_table(os.path.join(parent, "computer_usage.json"))
     insert_touples_into_database(12356,12358,456789)
+    if(check_account("U10916001", "2345")):
+        print("存在這筆資料")
+    else:
+        print("不存在這筆資料")
     conn.close()
     # jsonData = json.load(open(os.path.join(parent, "student_account.json"), "r"))
     # cmmdStr = f"INSERT INTO {jsonData['table_name']} ({','.join([e[0] for e in jsonData['cols']])}) VALUES "
