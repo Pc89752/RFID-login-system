@@ -16,6 +16,8 @@ namespace screen_lock
         private string? _serverUri;
         private LoginForm? _loginForm;
         private Label _errorLabel = new Label();
+        private int _vid, _pid;
+        // private string _guid;
         public LoginScreen(string serverUri)
         {
             InitializeComponent(serverUri);
@@ -54,7 +56,8 @@ namespace screen_lock
             TabPage RFIDPage = new TabPage();
             RFIDPage.Name = "RFID";
             RFIDPage.Text = "RFID";
-            RFIDReader RFID_reader = new RFIDReader();
+            RFIDReader RFID_reader = new RFIDReader(_vid, _pid);
+            // RFIDReader RFID_reader = new RFIDReader(_guid);
             RFID_reader.Anchor = AnchorStyles.None;
             RFIDPanel.Controls.Add(RFID_reader);
             RFIDPanel.Dock = DockStyle.Fill;
@@ -204,6 +207,7 @@ namespace screen_lock
 
             // TODO: need an Url of server
             LoginScreen loginScreen = new LoginScreen("http://127.0.0.1:5000/submit");
+
             loginScreen.Padding = new Padding(50);
             Application.Run(loginScreen);
         }

@@ -38,9 +38,17 @@
         "net7.0-windows7.0": {
           "targetAlias": "net7.0-windows",
           "dependencies": {
+            "LibUsbDotNet": {
+              "target": "Package",
+              "version": "[2.2.29, )"
+            },
             "Newtonsoft.Json": {
               "target": "Package",
               "version": "[13.0.3, )"
+            },
+            "System.Management": {
+              "target": "Package",
+              "version": "[7.0.2, )"
             }
           },
           "imports": [

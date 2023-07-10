@@ -66,3 +66,6 @@ C:\Users\91a04\OneDrive\文件\GitHub\RFID-login-system\RFID-login-system\screen
 C:\Users\91a04\OneDrive\文件\GitHub\RFID-login-system\RFID-login-system\screen_lock\obj\Debug\net7.0-windows\screen_lock.pdb
 C:\Users\91a04\OneDrive\文件\GitHub\RFID-login-system\RFID-login-system\screen_lock\obj\Debug\net7.0-windows\screen_lock.genruntimeconfig.cache
 C:\Users\91a04\OneDrive\文件\GitHub\RFID-login-system\RFID-login-system\screen_lock\obj\Debug\net7.0-windows\ref\screen_lock.dll
+C:\Users\91a04\OneDrive\文件\GitHub\RFID-login-system\RFID-login-system\screen_lock\bin\Debug\net7.0-windows\LibUsbDotNet.LibUsbDotNet.dll
+C:\Users\91a04\OneDrive\文件\GitHub\RFID-login-system\RFID-login-system\screen_lock\bin\Debug\net7.0-windows\System.Management.dll
+C:\Users\91a04\OneDrive\文件\GitHub\RFID-login-system\RFID-login-system\screen_lock\bin\Debug\net7.0-windows\runtimes\win\lib\net7.0\System.Management.dll
