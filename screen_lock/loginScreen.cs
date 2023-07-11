@@ -79,7 +79,7 @@ namespace screen_lock
             TabPage walkwayPage = new TabPage();
             walkwayPage.Name = "walkway";
             walkwayPage.Text = "walkway";
-            Walkway walkway = new Walkway();
+            DevPass walkway = new DevPass();
             walkway.Anchor = AnchorStyles.None;
             walkwayPanel.Controls.Add(walkway);
             walkwayPanel.Dock = DockStyle.Fill;

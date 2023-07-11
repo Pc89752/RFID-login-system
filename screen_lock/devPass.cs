@@ -3,12 +3,12 @@ using System.Net.Http;
 
 namespace screen_lock
 {
-    public class Walkway : TableLayoutPanel
+    public class DevPass : TableLayoutPanel
     {
         private Label _key = new Label();
         private TextBox _txtKey = new TextBox();
         private Button _btnLogin = new Button();
-        public Walkway()
+        public DevPass()
         {
             AutoSize = true;
             FlowLayoutPanel panel = new FlowLayoutPanel();
