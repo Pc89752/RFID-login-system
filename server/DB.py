@@ -48,15 +48,15 @@ def insertTable(source_json_path):
     
     conn.commit()
 
-def insert_touples_into_computer_usage(ComputerID,StudentID,enter_time,leave_time):
+def insert_touples_into_DB(table_name,attributes):
     # conn = sqlite3.connect('DB.db')
     cursor = conn.cursor()
-    
-    table_name = 'ComputerUsage'
 
     # 將元組資料插入資料庫
     try:
-        cursor.execute(f"INSERT INTO {table_name} VALUES ({ComputerID},{StudentID},{enter_time},{leave_time} )")
+        placeholder = ",".join(["?" for _ in attributes[0]])
+        query = f"INSERT INTO {table_name} VALUES ({placeholder})"
+        cursor.executemany(query, attributes)
         conn.commit()
         print("成功插入元組到資料庫")
     except Exception as e:
@@ -130,8 +130,8 @@ if __name__ == "__main__":
     insertTable(innerCode_path)
     
     
-    insert_touples_into_computer_usage(12356,12345,12358,456789)
-    insert_touples_into_computer_usage(12456,12345,12358,456789)
+    insert_touples_into_DB("ComputerUsage",[[12356,12345,12358,456789]])
+    # insert_touples_into_computer_usage(12456,12345,12358,456789)
     
     if(check_account("U10916001", "1234")):
         print("存在這筆資料")
