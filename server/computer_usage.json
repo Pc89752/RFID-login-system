@@ -2,6 +2,7 @@
     "table_name": "ComputerUsage",
     "cols": [
         ["ComputerID", "int"],
+        ["StudentId","int"],
         ["enterTime", "int"],
         ["leaveTime", "int"]
     ],
