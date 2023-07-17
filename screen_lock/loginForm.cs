@@ -12,11 +12,12 @@ namespace screen_lock
         private TextBox _txtPassword = new TextBox();
         private Button _btnLogin = new Button();
         private Label _errorLabel = new Label();
-        private string _serverUri;
+        private string _serverUrl;
+        private const string route = "/submit/account_login";
         public LoginForm(string serverUri)
         // public LoginForm()
         {
-            _serverUri = serverUri;
+            _serverUrl = serverUri + route;
             AutoSize = true;
 
             _lblUsername.Text = "Username:";
@@ -33,7 +34,7 @@ namespace screen_lock
             SetColumnSpan(_errorLabel, 2);
 
             // onsubmit
-            Click += onSubmit;
+            _btnLogin.Click += onSubmit;
 
             // adding errorLabel
             _errorLabel.Font = new Font("Arial", 24,FontStyle.Bold);
@@ -49,9 +50,9 @@ namespace screen_lock
             _errorLabel.Text = "Form cannot be closed manually!";
         }
 
-        public async void onSubmit(object? sender, EventArgs e)
+        private async void onSubmit(object? sender, EventArgs e)
         {
-            if(_serverUri==null)
+            if(_serverUrl==null)
             {
                 _errorLabel.ForeColor = Color.Orange;
                 _errorLabel.Text = "Invalid Uri!";
@@ -71,7 +72,7 @@ namespace screen_lock
                 string? result = null;
                 try
                 {
-                    var response = await client.PostAsync(_serverUri, new StringContent(payloadJson.ToString()));
+                    var response = await client.PostAsync(_serverUrl, new StringContent(payloadJson.ToString()));
                     if(response!=null) result = await response.Content.ReadAsStringAsync();
                 }
                 catch (System.Exception)
@@ -114,22 +115,6 @@ namespace screen_lock
                 }
             }
         }
-
-        // public Button BtnLogin
-        // {
-        //     get {return _btnLogin;}
-        // }
-
-        // public String Username
-        // {
-        //     get {return _txtUsername.Text;}
-        // }
-
-        // public String Password
-        // {
-        //     get {return _txtPassword.Text;}
-        // }
-        
 
         // [STAThread]
         // static void Main()

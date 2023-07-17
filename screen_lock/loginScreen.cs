@@ -1,12 +1,13 @@
-﻿// using System;
-// using System.Collections.Generic;
-// using System.ComponentModel;
-// using System.Data;
-// using System.Drawing;
-// using System.Linq;
-// using System.Text;
-// using System.Windows.Forms;
-// using Newtonsoft.Json;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Windows.Forms;
+using Newtonsoft.Json.Linq;
+using Microsoft.Win32;
 
 namespace screen_lock
 {
@@ -14,9 +15,10 @@ namespace screen_lock
     {
         private string? _serverUri;
         private LoginForm? _loginForm;
-        private static RFIDReader RFID_reader = new RFIDReader();
+        private static RFIDReader? _RFID_reader;
         TabControl tc = new TabControl();
         private int tc_index = 0;
+        private const string shutdownReportRoute = "/shutdownReport/";
         public LoginScreen(string serverUri)
         {
             InitializeComponent(serverUri);
@@ -48,8 +50,9 @@ namespace screen_lock
             TabPage RFIDPage = new TabPage();
             RFIDPage.Name = "RFID";
             RFIDPage.Text = "RFID";
-            RFID_reader.Anchor = AnchorStyles.None;
-            RFIDPanel.Controls.Add(RFID_reader);
+            _RFID_reader = new RFIDReader(serverUri);
+            _RFID_reader.Anchor = AnchorStyles.None;
+            RFIDPanel.Controls.Add(_RFID_reader);
             RFIDPanel.Dock = DockStyle.Fill;
             RFIDPanel.AutoSize = true;
             RFIDPage.Controls.Add(RFIDPanel);
@@ -77,11 +80,11 @@ namespace screen_lock
             walkwayPanel.RowStyles.Add(new RowStyle(SizeType.AutoSize));
             walkwayPanel.RowStyles.Add(new RowStyle(SizeType.AutoSize));
             TabPage walkwayPage = new TabPage();
-            walkwayPage.Name = "walkway";
-            walkwayPage.Text = "walkway";
-            DevPass walkway = new DevPass();
-            walkway.Anchor = AnchorStyles.None;
-            walkwayPanel.Controls.Add(walkway);
+            walkwayPage.Name = "dev pass";
+            walkwayPage.Text = "dev pass";
+            DevPass devPass = new DevPass(serverUri);
+            devPass.Anchor = AnchorStyles.None;
+            walkwayPanel.Controls.Add(devPass);
             walkwayPanel.Dock = DockStyle.Fill;
             walkwayPanel.AutoSize = true;
             walkwayPage.Controls.Add(walkwayPanel);
@@ -92,9 +95,11 @@ namespace screen_lock
 
             // TODO: uncomment this line before officially run
             // this.FormClosing += preventUserClosing;
+            SystemEvents.SessionEnding += cleaning;
+            SystemEvents.SessionEnding += returnShutdownTime;
             this.ResumeLayout(false);
             this.PerformLayout();
-            RFID_reader.startReading();
+            _RFID_reader.startReading();
         }
 
         private void preventUserClosing(object? sender, FormClosingEventArgs e)
@@ -112,11 +117,38 @@ namespace screen_lock
             }
         }
 
+        private async void returnShutdownTime(object? sender, SessionEndingEventArgs e)
+        {
+            if(e.Reason == SessionEndReasons.SystemShutdown)
+            {
+                string formattedDateTime = DateTime.Now.ToString("dddd, dd MMMM yyyy HH:mm:ss");
+                string serverUrl = _serverUri + shutdownReportRoute;
+                using(var client = new HttpClient())
+                {
+                    // Creating payload Json
+                    JObject payloadJson =
+                        new JObject(
+                            new JProperty("shutdownTime", formattedDateTime)
+                        );
+                    try
+                    {
+                        await client.PostAsync(serverUrl, new StringContent(payloadJson.ToString()));
+                    }
+                    catch (System.Exception) {}
+                }
+            }
+        }
+
+        private void cleaning(object? sender, SessionEndingEventArgs e)
+        {
+            if(_RFID_reader != null) _RFID_reader.CloseProcess();
+        }
+
         private void tab_indexChanged(object? sender, EventArgs e)
         {
-            if(tc_index == 0) RFID_reader.stopReading();
+            if(tc_index == 0 && _RFID_reader!=null) _RFID_reader.stopReading();
             tc_index = tc.SelectedIndex;
-            if(tc_index == 0) RFID_reader.startReading();
+            if(tc_index == 0 && _RFID_reader!=null) _RFID_reader.startReading();
         }
 
         [STAThread]
@@ -126,7 +158,7 @@ namespace screen_lock
             Application.SetCompatibleTextRenderingDefault(false);
 
             // TODO: need an Url of server
-            LoginScreen loginScreen = new LoginScreen("http://127.0.0.1:5000/submit");
+            LoginScreen loginScreen = new LoginScreen("http://127.0.0.1:5000/");
 
             loginScreen.Padding = new Padding(50);
             Application.Run(loginScreen);
