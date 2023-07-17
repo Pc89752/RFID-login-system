@@ -1,0 +1,10 @@
+{
+    "table_name": "InnerCode",
+    "cols": [
+        ["Code", "varchar(255)"],
+        ["StudentID", "varchar(255)"]
+    ],
+    "rows": [
+       ["110673973","U10916018"]
+    ]
+}
