@@ -1,0 +1,10 @@
+{
+    "table_name": "InternalCode",
+    "cols": [
+        ["Code", "int"],
+        ["StudentID", "int"]
+    ],
+    "rows": [
+       
+    ]
+}
