@@ -63,55 +63,98 @@ def insert_touples_into_DB(table_name,attributes):
         print("插入元組失敗:", str(e))
     
     # 關閉連線
-def check_inner_code(code,studentID):
-    cursor = conn.cursor()
+# def check_inner_code(code,studentID):
+#     cursor = conn.cursor()
     
-    # 假設資料表名稱為 "your_table"
-    table_name = 'InnerCode'
+#     # 假設資料表名稱為 "your_table"
+#     table_name = 'InnerCode'
+#     # 查詢資料庫中是否存在對應的資料
+#     try:
+#         query = f"SELECT * FROM {table_name} WHERE Code = {code} AND StudentID = '{studentID}'"
+#         cursor.execute(query)
+#     except Exception as e:
+#         pass
+
+#     # 檢查是否存在結果
+#     result = cursor.fetchone()
+
+#     # 關閉連線
+   
+
+#     # 根據是否存在結果回傳 True 或 False
+#     if result is not None:
+#         return True
+#     else:
+#         return False
+# def check_account(student_ID, password):
+#     cursor = conn.cursor()
+
+#     # 假設資料表名稱為 "your_table"
+#     table_name = 'StudentAccount'
+
+#     # 查詢資料庫中是否存在對應的資料
+#     try:
+#         query = f"SELECT * FROM {table_name} WHERE StudentID = ? AND Password = ?"
+#         cursor.execute(query, (student_ID, password))   
+#     except Exception as e:
+#         pass
+
+#     # 檢查是否存在結果
+#     result = cursor.fetchone()
+
+#     # 關閉連線
+   
+
+#     # 根據是否存在結果回傳 True 或 False
+#     if result is not None:
+#         return True
+#     else:
+#         return False
+
+def get_tuple(table_name,pk):
+    cursor = conn.cursor()
+
     # 查詢資料庫中是否存在對應的資料
     try:
-        query = f"SELECT * FROM {table_name} WHERE Code = {code} AND StudentID = '{studentID}'"
+        pk_col = find_pk_col(table_name)
+        query = f"SELECT * FROM {table_name} WHERE {pk_col} = '{pk}'"
         cursor.execute(query)
+        # cursor.execute(query, pk) 
+        result = cursor.fetchone()
+        return result  
     except Exception as e:
-        pass
+        print("尋找失敗:", str(e))
+        return None
 
     # 檢查是否存在結果
-    result = cursor.fetchone()
-
-    # 關閉連線
-   
-
-    # 根據是否存在結果回傳 True 或 False
-    if result is not None:
-        return True
-    else:
-        return False
-def check_account(student_ID, password):
+def update_DB(table, pk, tuple_data):
     cursor = conn.cursor()
+    pk_col = find_pk_col(table)
+    # 執行更新操作
+    try:
+        set_columns = ", ".join(f"{column[0]}='{column[1]}'" for column in tuple_data)
+        query = f"UPDATE {table} SET {set_columns} WHERE {pk_col}='{pk}'"
+        cursor.execute(query)
+        conn.commit()
+        print("資料更新成功")
+    except Exception as e:
+        print("資料更新失敗:", str(e))
 
-    # 假設資料表名稱為 "your_table"
-    table_name = 'StudentAccount'
+def find_pk_col(table):
+    cursor = conn.cursor()
 
     # 查詢資料庫中是否存在對應的資料
     try:
-        query = f"SELECT * FROM {table_name} WHERE StudentID = ? AND Password = ?"
-        cursor.execute(query, (student_ID, password))   
+        cursor.execute(f"pragma table_info('{table}')")
+        infos = cursor.fetchall()
+        pk_col = ""
+        for info in infos:
+            if info[5] == 1:
+                pk_col = info[1]
+        return pk_col
     except Exception as e:
-        pass
-
-    # 檢查是否存在結果
-    result = cursor.fetchone()
-
-    # 關閉連線
-   
-
-    # 根據是否存在結果回傳 True 或 False
-    if result is not None:
-        return True
-    else:
-        return False
-
-    
+        print("尋找失敗:", str(e))
+        return None
 
 if __name__ == "__main__":
     import json
@@ -131,17 +174,9 @@ if __name__ == "__main__":
     
     
     insert_touples_into_DB("ComputerUsage",[[12356,12345,12358,456789]])
-    # insert_touples_into_computer_usage(12456,12345,12358,456789)
+    print(get_tuple("StudentAccount","U10916001"))
+    update_DB("StudentAccount","U10916001",[("Password","23456")])  
     
-    if(check_account("U10916001", "1234")):
-        print("存在這筆資料")
-    else:
-        print("不存在這筆資料")
-        
-    if(check_inner_code("110673973",'U10916018')):
-        print("存在這筆資料")
-    else:
-        print("不存在這筆資料")
     conn.close()
     # jsonData = json.load(open(os.path.join(parent, "student_account.json"), "r"))
     # cmmdStr = f"INSERT INTO {jsonData['table_name']} ({','.join([e[0] for e in jsonData['cols']])}) VALUES "
