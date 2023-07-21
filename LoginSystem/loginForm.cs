@@ -62,10 +62,13 @@ namespace screen_lock
             using(var client = new HttpClient())
             {
                 // Creating payload Json
+                string formattedDateTime = DateTime.Now.ToString("dddd, dd MMMM yyyy HH:mm:ss");
                 JObject payloadJson =
                     new JObject(
                         new JProperty("account", _txtUsername.Text),
-                        new JProperty("password", _txtPassword.Text)
+                        new JProperty("password", _txtPassword.Text),
+                        new JProperty("computerID", 1),
+                        new JProperty("loginTime", formattedDateTime)
                     );
 
                 // post login request

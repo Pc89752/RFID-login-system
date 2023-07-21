@@ -18,7 +18,8 @@ namespace screen_lock
         private static RFIDReader? _RFID_reader;
         TabControl tc = new TabControl();
         private int tc_index = 0;
-        private const string shutdownReportRoute = "/shutdownReport/";
+        private const string startTimeRoute = "/startTime/";
+        private const string shutdownReportRoute = "/closeReport/";
         public LoginScreen(string serverUri)
         {
             InitializeComponent(serverUri);
@@ -28,6 +29,7 @@ namespace screen_lock
         {
             _serverUri = serverUri;
 
+            // returnStartTime();
             this.SuspendLayout();
 
             // XXX: testing
@@ -93,10 +95,18 @@ namespace screen_lock
 
             Controls.Add(tc);
 
+
             // TODO: uncomment this line before officially run
             // this.FormClosing += preventUserClosing;
-            SystemEvents.SessionEnding += cleaning;
-            SystemEvents.SessionEnding += returnShutdownTime;
+
+            // TODO: handle program closing: cleaning, returnShutdownTime
+            // // SystemEvents.SessionEnding += cleaning;
+            // // SystemEvents.SessionEnding += returnShutdownTime;
+
+            // // TODO: delete this 2 line of code before officially run
+            // this.FormClosing += cleaning;
+            // this.FormClosing += returnShutdownTime;
+
             this.ResumeLayout(false);
             this.PerformLayout();
             _RFID_reader.startReading();
@@ -118,26 +128,47 @@ namespace screen_lock
         }
 
         private async void returnShutdownTime(object? sender, SessionEndingEventArgs e)
+        // private async void returnShutdownTime(object? sender, FormClosingEventHandler e)
         {
-            if(e.Reason == SessionEndReasons.SystemShutdown)
+            bool isShutdown = e.Reason == SessionEndReasons.SystemShutdown;
+            string formattedDateTime = DateTime.Now.ToString("dddd, dd MMMM yyyy HH:mm:ss");
+            string serverUrl = _serverUri + shutdownReportRoute;
+            using(var client = new HttpClient())
             {
-                string formattedDateTime = DateTime.Now.ToString("dddd, dd MMMM yyyy HH:mm:ss");
-                string serverUrl = _serverUri + shutdownReportRoute;
-                using(var client = new HttpClient())
+                // Creating payload Json
+                JObject payloadJson =
+                    new JObject(
+                        new JProperty("computerID", 1),
+                        new JProperty("shutdownTime", formattedDateTime),
+                        new JProperty("isShutdown", isShutdown)
+                    );
+                try
                 {
-                    // Creating payload Json
-                    JObject payloadJson =
-                        new JObject(
-                            new JProperty("shutdownTime", formattedDateTime)
-                        );
-                    try
-                    {
-                        await client.PostAsync(serverUrl, new StringContent(payloadJson.ToString()));
-                    }
-                    catch (System.Exception) {}
+                    await client.PostAsync(serverUrl, new StringContent(payloadJson.ToString()));
                 }
+                catch (System.Exception) {}
             }
         }
+
+        // private async void returnStartTime()
+        // {
+        //     string formattedDateTime = DateTime.Now.ToString("dddd, dd MMMM yyyy HH:mm:ss");
+        //     string serverUrl = _serverUri + startTimeRoute;
+        //     using(var client = new HttpClient())
+        //     {
+        //         // Creating payload Json\
+        //         JObject payloadJson =
+        //             new JObject(
+        //                 new JProperty("computerID", 1),
+        //                 new JProperty("startTime", formattedDateTime)
+        //             );
+        //         try
+        //         {
+        //             await client.PostAsync(serverUrl, new StringContent(payloadJson.ToString()));
+        //         }
+        //         catch (System.Exception) {}
+        //     }
+        // }
 
         private void cleaning(object? sender, SessionEndingEventArgs e)
         {

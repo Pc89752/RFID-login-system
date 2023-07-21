@@ -89,12 +89,12 @@
 
 ### 伺服器
 - URI: *使用者自訂*
-- 位址:
+- 位址: **(未實現)**
     - /clientSubmit
-        - /innerCode_login: 供卡片內碼登入使用
+        <!-- - /innerCode_login: 供卡片內碼登入使用
         - /account_login: 供帳密登入使用
-        - /devPass: 供開發人員登入使用
-        - /closeReport: 供程式關閉回報使用
+        - /devPass: 供開發人員登入使用 -->
+    - /closeReport: 供程式關閉回報使用
 - 回應:
     - 伺服器連接錯誤: 無回應
     - 伺服器內部錯誤: HTML **(重大錯誤，應立即修復)**
