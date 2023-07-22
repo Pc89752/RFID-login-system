@@ -1,8 +1,7 @@
 using System;
 using System.Net.Http;
-using Newtonsoft.Json.Linq;
 
-namespace screen_lock
+namespace LoginSystem
 {
     public class LoginForm : TableLayoutPanel
     {
@@ -12,12 +11,12 @@ namespace screen_lock
         private TextBox _txtPassword = new TextBox();
         private Button _btnLogin = new Button();
         private Label _errorLabel = new Label();
-        private string _serverUrl;
-        private const string route = "/submit/account_login";
-        public LoginForm(string serverUri)
-        // public LoginForm()
+        private ServerHandler _sh;
+        // TODO: change endPoint
+        private const string _endPoint = "/submit/account_login";
+        public LoginForm(ServerHandler sh)
         {
-            _serverUrl = serverUri + route;
+            _sh = sh;
             AutoSize = true;
 
             _lblUsername.Text = "Username:";
@@ -52,70 +51,37 @@ namespace screen_lock
 
         private async void onSubmit(object? sender, EventArgs e)
         {
-            if(_serverUrl==null)
+            string formattedDateTime = DateTime.Now.ToString("dddd, dd MMMM yyyy HH:mm:ss");
+            Dictionary<string, object> payload = new Dictionary<string, object>()
             {
-                _errorLabel.ForeColor = Color.Orange;
-                _errorLabel.Text = "Invalid Uri!";
-                return;
-            }
+                {"account", _txtUsername.Text},
+                {"password", _txtPassword.Text},
+                {"computerID", 1},
+                {"loginTime", formattedDateTime}
+            };
+            int status_code = await _sh.submit(payload, _endPoint);
 
-            using(var client = new HttpClient())
+            switch(status_code)
             {
-                // Creating payload Json
-                string formattedDateTime = DateTime.Now.ToString("dddd, dd MMMM yyyy HH:mm:ss");
-                JObject payloadJson =
-                    new JObject(
-                        new JProperty("account", _txtUsername.Text),
-                        new JProperty("password", _txtPassword.Text),
-                        new JProperty("computerID", 1),
-                        new JProperty("loginTime", formattedDateTime)
-                    );
-
-                // post login request
-                string? result = null;
-                try
-                {
-                    var response = await client.PostAsync(_serverUrl, new StringContent(payloadJson.ToString()));
-                    if(response!=null) result = await response.Content.ReadAsStringAsync();
-                }
-                catch (System.Exception)
-                {
+                case -1:
                     _errorLabel.ForeColor = Color.Orange;
                     _errorLabel.Text = "Connect failed!";
-                    return;
-                }
-
-                // handle response
-                // JObject returnJson = new JObject();
-                if(result != null)
-                {
-                    // JObject returnJson = JObject.Parse(result);
-                    // int? status = (int?)returnJson["status"];
-                    int status = Int32.Parse(result);
-                    switch (status)
-                    {
-                        // all normal
-                        case 0:
-                            _errorLabel.ForeColor = Color.Blue;
-                            _errorLabel.Text = "Success!";
-                            break;
-                        // Invalid username
-                        case 1:
-                            _errorLabel.ForeColor = Color.Red;
-                            _errorLabel.Text = "Invalid username!";
-                            break;
-                        // Invalid password
-                        case 2:
-                            _errorLabel.ForeColor = Color.Red;
-                            _errorLabel.Text = "Invalid password!";
-                            break;
-                    }
-                }
-                else
-                {
-                    _errorLabel.ForeColor = Color.Orange;
-                    _errorLabel.Text = "Connect failed!";
-                }
+                    break;
+                case 0:
+                    _errorLabel.ForeColor = Color.Blue;
+                    _errorLabel.Text = "Success!";
+                    break;
+                case 1:
+                    _errorLabel.ForeColor = Color.Red;
+                    _errorLabel.Text = "Invalid username!";
+                    break;
+                case 2:
+                    _errorLabel.ForeColor = Color.Red;
+                    _errorLabel.Text = "Invalid password!";
+                    break;
+                default:
+                    Log.log("ERROR", $"status_code: {status_code}", new Exception("status_code out of range"), null);
+                    break;
             }
         }
 

@@ -1,8 +1,7 @@
 using System;
 using System.Net.Http;
-using Newtonsoft.Json.Linq;
 
-namespace screen_lock
+namespace LoginSystem
 {
     public class DevPass : TableLayoutPanel
     {
@@ -10,11 +9,12 @@ namespace screen_lock
         private Label _errorLabel = new Label();
         private TextBox _txtKey = new TextBox();
         private Button _btnLogin = new Button();
-        private string _serverUrl;
-        private const string route = "/submit/devPass";
-        public DevPass(string serverUri)
+        private ServerHandler _sh;
+        // TODO: change endPoint
+        private const string _endPoint = "/submit/devPass";
+        public DevPass(ServerHandler sh)
         {
-            _serverUrl = serverUri + route;
+            _sh = sh;
 
             AutoSize = true;
             FlowLayoutPanel panel = new FlowLayoutPanel();
@@ -41,62 +41,31 @@ namespace screen_lock
 
         private async void onSubmit(object? sender, EventArgs e)
         {
-            if(_serverUrl==null)
+            Dictionary<string, object> payload = new Dictionary<string, object>()
             {
-                _errorLabel.ForeColor = Color.Orange;
-                _errorLabel.Text = "Invalid Uri!";
-                return;
-            }
+                {"DEV_TOKEN", _txtKey.Text}
+            };
+            int status_code = await _sh.submit(payload, _endPoint);
 
-            using(var client = new HttpClient())
+            switch(status_code)
             {
-                // Creating payload Json
-                JObject payloadJson =
-                    new JObject(
-                        new JProperty("DEV_TOKEN", _txtKey.Text)
-                    );
-
-                // post login request
-                string? result = null;
-                try
-                {
-                    var response = await client.PostAsync(_serverUrl, new StringContent(payloadJson.ToString()));
-                    if(response!=null) result = await response.Content.ReadAsStringAsync();
-                }
-                catch (System.Exception)
-                {
+                case -1:
                     _errorLabel.ForeColor = Color.Orange;
                     _errorLabel.Text = "Connect failed!";
-                    return;
-                }
-
-                // handle response
-                // JObject returnJson = new JObject();
-                if(result != null)
-                {
-                    int status = Int32.Parse(result);
-                    switch (status)
-                    {
-                        // all normal
-                        case 0:
-                            _errorLabel.ForeColor = Color.Blue;
-                            _errorLabel.Text = "Success!";
-                            break;
-                        // Invalid token
-                        case 1:
-                            _errorLabel.ForeColor = Color.Red;
-                            _errorLabel.Text = "Invalid token!";
-                            break;
-                    }
-                }
-                else
-                {
-                    _errorLabel.ForeColor = Color.Orange;
-                    _errorLabel.Text = "Connect failed!";
-                }
+                    break;
+                case 0:
+                    _errorLabel.ForeColor = Color.Blue;
+                    _errorLabel.Text = "Success!";
+                    break;
+                case 4:
+                    _errorLabel.ForeColor = Color.Red;
+                    _errorLabel.Text = "Invalid token!";
+                    break;
+                default:
+                    Log.log("ERROR", $"status_code: {status_code}", new Exception("status_code out of range"), null);
+                    break;
             }
         }
-
 
         // [STAThread]
         // static void Main()

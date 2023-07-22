@@ -6,30 +6,33 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using Newtonsoft.Json.Linq;
 using Microsoft.Win32;
 
-namespace screen_lock
+namespace LoginSystem
 {
     public class LoginScreen : Form
     {
-        private string? _serverUri;
-        private LoginForm? _loginForm;
-        private static RFIDReader? _RFID_reader;
-        TabControl tc = new TabControl();
+        // private string? _serverUri;
+        private ServerHandler _sh;
+        private LoginForm _loginForm;
+        private RFIDReader _RFID_reader;
+        private DevPass _devPass;
+        private TabControl tc = new TabControl();
         private int tc_index = 0;
-        private const string startTimeRoute = "/startTime/";
-        private const string shutdownReportRoute = "/closeReport/";
-        public LoginScreen(string serverUri)
+        // private const string startTimeRoute = "/startTime/";
+        public LoginScreen(ServerHandler sh)
         {
-            InitializeComponent(serverUri);
+            _sh = sh;
+            _RFID_reader = new RFIDReader(_sh);
+            _loginForm = new LoginForm(_sh);
+            _devPass = new DevPass(_sh);
+            InitializeComponent();
         }
 
-        private void InitializeComponent(string serverUri)
+        private void InitializeComponent()
         {
-            _serverUri = serverUri;
-
             // returnStartTime();
+            Padding = new Padding(50);
             this.SuspendLayout();
 
             // XXX: testing
@@ -52,7 +55,6 @@ namespace screen_lock
             TabPage RFIDPage = new TabPage();
             RFIDPage.Name = "RFID";
             RFIDPage.Text = "RFID";
-            _RFID_reader = new RFIDReader(serverUri);
             _RFID_reader.Anchor = AnchorStyles.None;
             RFIDPanel.Controls.Add(_RFID_reader);
             RFIDPanel.Dock = DockStyle.Fill;
@@ -62,7 +64,6 @@ namespace screen_lock
             tc.TabPages.Add(RFIDPage);
 
             // adding loginForm
-            _loginForm = new LoginForm(_serverUri);
             _loginForm.Anchor = AnchorStyles.None;
             if(Screen.PrimaryScreen!=null)
                 _loginForm.Margin = new Padding(0, Screen.PrimaryScreen.Bounds.Height/4, 0, 0);
@@ -76,36 +77,27 @@ namespace screen_lock
             tc.TabPages.Add(loginPage);
 
             // Adding walkway to the tab
-            TableLayoutPanel walkwayPanel = new TableLayoutPanel();
-            walkwayPanel.Dock = DockStyle.Top;
-            walkwayPanel.AutoSize = true;
-            walkwayPanel.RowStyles.Add(new RowStyle(SizeType.AutoSize));
-            walkwayPanel.RowStyles.Add(new RowStyle(SizeType.AutoSize));
-            TabPage walkwayPage = new TabPage();
-            walkwayPage.Name = "dev pass";
-            walkwayPage.Text = "dev pass";
-            DevPass devPass = new DevPass(serverUri);
-            devPass.Anchor = AnchorStyles.None;
-            walkwayPanel.Controls.Add(devPass);
-            walkwayPanel.Dock = DockStyle.Fill;
-            walkwayPanel.AutoSize = true;
-            walkwayPage.Controls.Add(walkwayPanel);
-            walkwayPage.Font = new Font("Verdana", 12);
-            tc.TabPages.Add(walkwayPage);
+            TableLayoutPanel devPassPanel = new TableLayoutPanel();
+            devPassPanel.Dock = DockStyle.Top;
+            devPassPanel.AutoSize = true;
+            devPassPanel.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+            devPassPanel.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+            TabPage devPassPage = new TabPage();
+            devPassPage.Name = "dev pass";
+            devPassPage.Text = "dev pass";
+            _devPass.Anchor = AnchorStyles.None;
+            devPassPanel.Controls.Add(_devPass);
+            devPassPanel.Dock = DockStyle.Fill;
+            devPassPanel.AutoSize = true;
+            devPassPage.Controls.Add(devPassPanel);
+            devPassPage.Font = new Font("Verdana", 12);
+            tc.TabPages.Add(devPassPage);
 
             Controls.Add(tc);
 
 
             // TODO: uncomment this line before officially run
             // this.FormClosing += preventUserClosing;
-
-            // TODO: handle program closing: cleaning, returnShutdownTime
-            // // SystemEvents.SessionEnding += cleaning;
-            // // SystemEvents.SessionEnding += returnShutdownTime;
-
-            // // TODO: delete this 2 line of code before officially run
-            // this.FormClosing += cleaning;
-            // this.FormClosing += returnShutdownTime;
 
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -127,54 +119,6 @@ namespace screen_lock
             }
         }
 
-        private async void returnShutdownTime(object? sender, SessionEndingEventArgs e)
-        // private async void returnShutdownTime(object? sender, FormClosingEventHandler e)
-        {
-            bool isShutdown = e.Reason == SessionEndReasons.SystemShutdown;
-            string formattedDateTime = DateTime.Now.ToString("dddd, dd MMMM yyyy HH:mm:ss");
-            string serverUrl = _serverUri + shutdownReportRoute;
-            using(var client = new HttpClient())
-            {
-                // Creating payload Json
-                JObject payloadJson =
-                    new JObject(
-                        new JProperty("computerID", 1),
-                        new JProperty("shutdownTime", formattedDateTime),
-                        new JProperty("isShutdown", isShutdown)
-                    );
-                try
-                {
-                    await client.PostAsync(serverUrl, new StringContent(payloadJson.ToString()));
-                }
-                catch (System.Exception) {}
-            }
-        }
-
-        // private async void returnStartTime()
-        // {
-        //     string formattedDateTime = DateTime.Now.ToString("dddd, dd MMMM yyyy HH:mm:ss");
-        //     string serverUrl = _serverUri + startTimeRoute;
-        //     using(var client = new HttpClient())
-        //     {
-        //         // Creating payload Json\
-        //         JObject payloadJson =
-        //             new JObject(
-        //                 new JProperty("computerID", 1),
-        //                 new JProperty("startTime", formattedDateTime)
-        //             );
-        //         try
-        //         {
-        //             await client.PostAsync(serverUrl, new StringContent(payloadJson.ToString()));
-        //         }
-        //         catch (System.Exception) {}
-        //     }
-        // }
-
-        private void cleaning(object? sender, SessionEndingEventArgs e)
-        {
-            if(_RFID_reader != null) _RFID_reader.CloseProcess();
-        }
-
         private void tab_indexChanged(object? sender, EventArgs e)
         {
             if(tc_index == 0 && _RFID_reader!=null) _RFID_reader.stopReading();
@@ -182,17 +126,9 @@ namespace screen_lock
             if(tc_index == 0 && _RFID_reader!=null) _RFID_reader.startReading();
         }
 
-        [STAThread]
-        static void Main()
+        public void cleaning()
         {
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-
-            // TODO: need an Url of server
-            LoginScreen loginScreen = new LoginScreen("http://127.0.0.1:5000/");
-
-            loginScreen.Padding = new Padding(50);
-            Application.Run(loginScreen);
+            if(_RFID_reader != null) _RFID_reader.CloseProcess();
         }
     }
 }

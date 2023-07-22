@@ -2,23 +2,22 @@ using System;
 using System.Threading;
 using System.Management;
 using System.Diagnostics;
-using Newtonsoft.Json.Linq;
 
-namespace screen_lock
+namespace LoginSystem
 {
     public class RFIDReader : TableLayoutPanel
     {
-        private static Label _stateLabel = new Label();
-        private static Thread? _thread;
-        private static string _innerCode = "";
+        private Label _stateLabel = new Label();
+        private Thread? _thread;
+        private string _innerCode = "";
         private string _exePath = @"..\NfcCode\NfcCode.exe";
         private Process? _process;
-        private static string? _serverUrl;
-        private const string route = "/submit/innerCode_login";
+        private ServerHandler _sh;
+        private const string _endPoint = "/submit/innerCode_login";
         private bool _processRunning = false;
-        public RFIDReader(string serverUri)
+        public RFIDReader(ServerHandler sh)
         {
-            _serverUrl = serverUri + route;
+            _sh = sh;
 
             AutoSize = true;
             _stateLabel.Font = new Font("Arial", 24,FontStyle.Bold);
@@ -66,12 +65,12 @@ namespace screen_lock
                 _process.WaitForInputIdle();
                 _processRunning = true;
             }
-            _thread = new Thread(readInput);
+            _thread = new Thread(() => readInput());
             _thread.Start();
             Console.WriteLine("Started Reading");
         }
 
-        private async static void readInput()
+        private async void readInput()
         {
             while(true)
             {
@@ -82,78 +81,43 @@ namespace screen_lock
                     Console.WriteLine(inp);
                     _stateLabel.Text = "loging in...";
                     _stateLabel.ForeColor = Color.Black;
-                    onSubmit();
+                    // await submit(sh);
+                    submit();
                 }
                 Thread.Sleep(2000);
             }
         }
 
-        // private async void onSubmit(object? sender, EventArgs e)
-        private static async void onSubmit()
+        private async void submit()
         {
-            if(_serverUrl==null)
+            string formattedDateTime = DateTime.Now.ToString("dddd, dd MMMM yyyy HH:mm:ss");
+            Dictionary<string, object> payload = new Dictionary<string, object>()
             {
-                _stateLabel.ForeColor = Color.Orange;
-                _stateLabel.Text = "Invalid Uri!";
-                return;
-            }
+                {"innerCode", _innerCode},
+                {"computerID", 1},
+                {"loginTime", formattedDateTime}
+            };
+            int status_code = await _sh.submit(payload, _endPoint);
 
-            using(var client = new HttpClient())
+            switch(status_code)
             {
-                // Creating payload Json
-                string formattedDateTime = DateTime.Now.ToString("dddd, dd MMMM yyyy HH:mm:ss");
-                JObject payloadJson =
-                    new JObject(
-                        new JProperty("innerCode", _innerCode),
-                        new JProperty("computerID", 1),
-                        new JProperty("loginTime", formattedDateTime)
-                    );
-
-                // post login request
-                string? result = null;
-                try
-                {
-                    var response = await client.PostAsync(_serverUrl, new StringContent(payloadJson.ToString()));
-                    if(response!=null) result = await response.Content.ReadAsStringAsync();
-                }
-                catch (System.Exception)
-                {
+                case -1:
                     _stateLabel.ForeColor = Color.Orange;
                     _stateLabel.Text = "Connect failed!";
-                    return;
-                }
-
-                // handle response
-                if(result != null)
-                {
-                    int status = Int32.Parse(result);
-                    switch (status)
-                    {
-                        // all normal
-                        case 0:
-                            _stateLabel.ForeColor = Color.Blue;
-                            _stateLabel.Text = "Success!";
-                            break;
-                        // Invalid username
-                        case 1:
-                            _stateLabel.ForeColor = Color.Red;
-                            _stateLabel.Text = "Invalid username!";
-                            break;
-                        // Invalid password
-                        case 2:
-                            _stateLabel.ForeColor = Color.Red;
-                            _stateLabel.Text = "Invalid password!";
-                            break;
-                    }
-                }
-                else
-                {
-                    _stateLabel.ForeColor = Color.Orange;
-                    _stateLabel.Text = "Connect failed!";
-                }
+                    break;
+                case 0:
+                    _stateLabel.ForeColor = Color.Blue;
+                    _stateLabel.Text = "Success!";
+                    break;
+                case 3:
+                    _stateLabel.ForeColor = Color.Red;
+                    _stateLabel.Text = "Invalid innerCode!";
+                    break;
+                default:
+                    Log.log("ERROR", $"status_code: {status_code}", new Exception("status_code out of range"), null);
+                    break;
             }
         }
-
         // [STAThread]
         // static void Main()
         // {

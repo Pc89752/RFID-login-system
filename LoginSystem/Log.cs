@@ -1,26 +1,41 @@
+using System.IO;
+
 namespace LoginSystem
 {
     class Log
     {
-        public static void LogError(string errorMessage)
+        public static void log(string logLevel, string message, Exception? exception, string? additionalData)
+        // public static void LogError(string errorMessage)
         {
             string dateString = DateTime.Now.ToString("YYYY-MM-DD");
             string timeString = DateTime.Now.ToString("HH:mm-:s");
-            string logFilePath = $"error/{dateString}.txt";
+            string logFolder = $"{Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)}/LoginSystem/error/";
+            string logFilePath = $"{logFolder}/{dateString}.txt";
+
+            Directory.CreateDirectory(logFolder);
 
             try
             {
                 using (StreamWriter sw = File.AppendText(logFilePath))
                 {
-                    // Add timestamp to the error message
-                    string logMessage = $"{timeString}: {errorMessage}";
-                    sw.WriteLine(logMessage);
+                    // Build the log entry with timestamp, log level, message, and additional data
+                    string logEntry = $"{timeString} [{logLevel}] - {message}";
+                    if (!string.IsNullOrEmpty(additionalData))
+                    {
+                        logEntry += $" - Additional Data: {additionalData}";
+                    }
+
+                    // If an exception is provided, append its details to the log entry
+                    if (exception != null)
+                    {
+                        logEntry += $" - Exception: {exception.ToString()}";
+                    }
+                    sw.WriteLine(logEntry);
                 }
             }
             catch (Exception ex)
             {
-                // Handle any exceptions that might occur during logging
-                Console.WriteLine($"Failed to log the error: {ex.Message}");
+                Console.WriteLine($"Error occurred while logging: {ex.Message}");
             }
         }
     }
