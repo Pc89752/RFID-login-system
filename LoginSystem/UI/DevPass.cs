@@ -10,7 +10,6 @@ namespace LoginSystem
         private TextBox _txtKey = new TextBox();
         private Button _btnLogin = new Button();
         private ServerHandler _sh;
-        // TODO: change endPoint
         private const string _endPoint = "/submit/devPass";
         public DevPass(ServerHandler sh)
         {

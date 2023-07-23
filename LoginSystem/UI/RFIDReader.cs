@@ -10,7 +10,7 @@ namespace LoginSystem
         private Label _stateLabel = new Label();
         private Thread? _thread;
         private string _innerCode = "";
-        private string _exePath = @"..\NfcCode\NfcCode.exe";
+        private string _exePath = @"C:\Program Files\NfcCode\NfcCode.exe";
         private Process? _process;
         private ServerHandler _sh;
         private const string _endPoint = "/submit/innerCode_login";
@@ -44,11 +44,10 @@ namespace LoginSystem
         public void CloseProcess()
         {
             if(_process == null) return;
+            Console.WriteLine($"Closing Process {_process.ProcessName}.");
             try
             {
-                _process.CloseMainWindow(); // Close the main window (e.g., send close signal to a regular application)
-                // if (!_process.WaitForExit(5000)) _process.Kill();
-                _process.Close();
+                _process.Kill();
                 Console.WriteLine($"Process {_process.ProcessName} closed successfully.");
             }
             catch (Exception ex)
@@ -61,12 +60,7 @@ namespace LoginSystem
             if(_processRunning) return;
             
             _process = Process.Start(_exePath);
-            // check if the process successfully started
-            if(_process.HasExited)
-            {
-                _process.WaitForInputIdle();
-                _processRunning = true;
-            }
+            _processRunning = true;
             _thread = new Thread(() => readInput());
             _thread.Start();
             Console.WriteLine("Started Reading");

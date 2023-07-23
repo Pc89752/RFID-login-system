@@ -12,7 +12,6 @@ namespace LoginSystem
         private Button _btnLogin = new Button();
         private Label _errorLabel = new Label();
         private ServerHandler _sh;
-        // TODO: change endPoint
         private const string _endPoint = "/submit/account_login";
         public LoginForm(ServerHandler sh)
         {

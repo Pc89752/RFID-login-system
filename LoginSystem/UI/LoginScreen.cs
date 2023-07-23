@@ -97,6 +97,7 @@ namespace LoginSystem
 
 
             // TODO: uncomment this line before officially run
+            this.FormClosing += cleaning;
             // this.FormClosing += preventUserClosing;
 
             this.ResumeLayout(false);
@@ -126,9 +127,20 @@ namespace LoginSystem
             if(tc_index == 0 && _RFID_reader!=null) _RFID_reader.startReading();
         }
 
-        public void cleaning()
+        private void cleaning(object? sender, FormClosingEventArgs e)
         {
             if(_RFID_reader != null) _RFID_reader.CloseProcess();
+        }
+
+        // XXX: Testing
+        [STAThread]
+        static void Main()
+        {
+            ServerHandler sh = new ServerHandler("http://127.0.0.1:5000/", "MyComputer");
+            LoginScreen loginScreen = new LoginScreen(sh);
+            Application.EnableVisualStyles();
+            // Application.SetCompatibleTextRenderingDefault(false);
+            Application.Run(loginScreen);
         }
     }
 }
