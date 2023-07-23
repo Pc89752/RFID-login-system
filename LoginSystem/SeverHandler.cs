@@ -7,15 +7,18 @@ namespace LoginSystem
     {
         private string _serverUri;
         public static string? usageRecordID;
-        public ServerHandler(string serverUri)
+        private string _computerID;
+        public ServerHandler(string serverUri, string computerID)
         {
             _serverUri = serverUri;
+            _computerID = computerID;
         }
 
         public async Task<int> submit(Dictionary<string, object> payloadDict, string endPoint)
         {
             string? result = null;
             string serverUrl = _serverUri + endPoint;
+            payloadDict.Add("computerID", _computerID);
             string payload = JsonConvert.SerializeObject(payloadDict);
             using(var client = new HttpClient())
             {
