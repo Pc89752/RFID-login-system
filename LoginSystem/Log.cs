@@ -8,7 +8,7 @@ namespace LoginSystem
         // public static void LogError(string errorMessage)
         {
             string dateString = DateTime.Now.ToString("YYYY-MM-DD");
-            string timeString = DateTime.Now.ToString("HH:mm-:s");
+            string timeString = DateTime.Now.ToString("HH:mm:s");
             string logFolder = $"{Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)}/LoginSystem/error/";
             string logFilePath = $"{logFolder}/{dateString}.txt";
 
@@ -19,7 +19,7 @@ namespace LoginSystem
                 using (StreamWriter sw = File.AppendText(logFilePath))
                 {
                     // Build the log entry with timestamp, log level, message, and additional data
-                    string logEntry = $"{timeString} [{logLevel}] - {message}";
+                    string logEntry = $"{timeString}: [{logLevel}] - {message}";
                     if (!string.IsNullOrEmpty(additionalData))
                     {
                         logEntry += $" - Additional Data: {additionalData}";

@@ -90,12 +90,9 @@ namespace LoginSystem
 
         private async void submit()
         {
-            string formattedDateTime = DateTime.Now.ToString("dddd, dd MMMM yyyy HH:mm:ss");
             Dictionary<string, object> payload = new Dictionary<string, object>()
             {
-                {"innerCode", _innerCode},
-                {"computerID", 1},
-                {"loginTime", formattedDateTime}
+                {"innerCode", _innerCode}
             };
             int status_code = await _sh.submit(payload, _endPoint);
 

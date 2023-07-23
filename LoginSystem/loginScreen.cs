@@ -110,12 +110,12 @@ namespace LoginSystem
             if (e.CloseReason == CloseReason.UserClosing)
             {
                 e.Cancel = true;
-                switch (tc_index)
-                {
-                    case 1:
-                        if(_loginForm!=null) _loginForm.errorMannualClosing();
-                        break;
-                }
+                // switch (tc_index)
+                // {
+                //     case 1:
+                //         if(_loginForm!=null) _loginForm.errorMannualClosing();
+                //         break;
+                // }
             }
         }
 

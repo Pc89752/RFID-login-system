@@ -36,6 +36,8 @@ namespace LoginSystem
             Controls.Add(_txtKey, 0, 1);
             // SetColumnSpan(_txtKey, 2);
             Controls.Add(_btnLogin, 0, 2);
+
+            _errorLabel.AutoSize = true;
             Controls.Add(_errorLabel, 0, 3);
         }
 

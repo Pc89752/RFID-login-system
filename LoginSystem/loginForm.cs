@@ -43,21 +43,18 @@ namespace LoginSystem
             _errorLabel.TextAlign = ContentAlignment.MiddleCenter;
         }
 
-        public void errorMannualClosing()
-        {
-            _errorLabel.ForeColor = Color.Red;
-            _errorLabel.Text = "Form cannot be closed manually!";
-        }
+        // public void errorMannualClosing()
+        // {
+        //     _errorLabel.ForeColor = Color.Red;
+        //     _errorLabel.Text = "Form cannot be closed manually!";
+        // }
 
         private async void onSubmit(object? sender, EventArgs e)
         {
-            string formattedDateTime = DateTime.Now.ToString("dddd, dd MMMM yyyy HH:mm:ss");
             Dictionary<string, object> payload = new Dictionary<string, object>()
             {
                 {"account", _txtUsername.Text},
-                {"password", _txtPassword.Text},
-                {"computerID", 1},
-                {"loginTime", formattedDateTime}
+                {"password", _txtPassword.Text}
             };
             int status_code = await _sh.submit(payload, _endPoint);
 

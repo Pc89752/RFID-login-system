@@ -11,7 +11,8 @@ namespace LoginSystem
         public BGService()
         {
             // TODO: Get the Uri of server
-            _sh = new ServerHandler("http://127.0.0.1:5000/");
+            // TODO: Get the computer ID
+            _sh = new ServerHandler("http://127.0.0.1:5000/", "MyComputer");
             _loginScreen = new LoginScreen(_sh);
         }
 
@@ -47,17 +48,17 @@ namespace LoginSystem
         }
     }
 
-    // public static class LoginSystem
-    // {
-    //     [STAThread]
-    //     static void Main()
-    //     {
-    //         Application.EnableVisualStyles();
-    //         Application.SetCompatibleTextRenderingDefault(false);
-
-    //         // TODO: need an Url of server
-    //         LoginScreen loginScreen = new LoginScreen("http://127.0.0.1:5000/");
-    //         Application.Run(loginScreen);
-    //     }
-    // }
+    // XXX: Testing
+    public class LoginSystem
+    {
+        [STAThread]
+        static void Main()
+        {
+            ServerHandler sh = new ServerHandler("http://127.0.0.1:5000/", "MyComputer");
+            LoginScreen loginScreen = new LoginScreen(sh);
+            Application.EnableVisualStyles();
+            // Application.SetCompatibleTextRenderingDefault(false);
+            Application.Run(loginScreen);
+        }
+    }
 }
