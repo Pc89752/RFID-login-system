@@ -1,3 +1,4 @@
 - [ ]: backgound running
-- [ ]: test ServerHandler
+- [x]: test ServerHandler
 - [ ]: handle repeating login requests from the identical computer
+- [ ]: Deal with server
