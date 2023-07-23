@@ -31,6 +31,7 @@ namespace LoginSystem
         public void stopReading()
         {
             if(_thread!=null) _thread.Join();
+            Console.WriteLine(_processRunning);
             if(_processRunning && _process != null)
             {
                 // Wait for the thread to finish before exiting
@@ -46,7 +47,8 @@ namespace LoginSystem
             try
             {
                 _process.CloseMainWindow(); // Close the main window (e.g., send close signal to a regular application)
-                if (!_process.WaitForExit(5000)) _process.Kill();
+                // if (!_process.WaitForExit(5000)) _process.Kill();
+                _process.Close();
                 Console.WriteLine($"Process {_process.ProcessName} closed successfully.");
             }
             catch (Exception ex)

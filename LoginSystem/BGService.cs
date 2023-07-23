@@ -37,7 +37,8 @@ namespace LoginSystem
 
         private async void returnClosing()
         {
-            string? usageRecordID = ServerHandler.usageRecordID;
+            // TODO: check if usageRecordID normal
+            string? usageRecordID = _sh.usageRecordID;
             if(usageRecordID == null) return;
             Dictionary<string, object> payload = new Dictionary<string, object>()
             {

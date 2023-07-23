@@ -6,7 +6,8 @@ namespace LoginSystem
     public class ServerHandler
     {
         private string _serverUri;
-        public static string? usageRecordID;
+        // TODO: check if usageRecordID normal
+        public string? usageRecordID;
         private string _computerID;
         public ServerHandler(string serverUri, string computerID)
         {
@@ -42,6 +43,7 @@ namespace LoginSystem
                     status_code = Convert.ToInt32(rDict["status_code"]);
                 else Log.log("ERROR", "Recieving message from server", new Exception("no status_code"), null);
                 if(status_code == 0 && rDict.ContainsKey("usageRecordID"))
+                    // TODO: check if usageRecordID normal
                     usageRecordID = Convert.ToString(rDict["usageRecordID"]);
                 return status_code;
             }
