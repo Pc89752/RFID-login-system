@@ -1,0 +1,6 @@
+- [ ]: backgound running
+- [x]: split the background program and UI, use background program to start the UI
+- [x]: test ServerHandler
+- [ ]: handle repeating login requests from the identical computer
+- [x]: Deal with server
+- [ ]: log closing errors to the database

@@ -1,12 +1,11 @@
 {
     "table_name": "ComputerUsage",
     "cols": [
+        ["usageRecordID", "int"],
         ["ComputerID", "varchar(255)"],
         ["StudentId","varchar(255)"],
-        ["enterTime", "varchar(255)"],
+        ["loginTime", "varchar(255)"],
         ["leaveTime", "varchar(255)"]
     ],
-    "rows": [
-       
-    ]
+    "rows": []
 }
