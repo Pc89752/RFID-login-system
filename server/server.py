@@ -51,25 +51,27 @@ def handle_close_report():
 def handle_account_login(record_db, info_db, jsonData):
     # get username and password
     cID, sID, password = jsonData["computerID"], jsonData["account"], jsonData["password"]
-
     # Check account and password
     valid_user, valid_password = False, False
     t = info_db.getTuple("StudentAccount", sID)
-    if t:
-        valid_user = True
-        if password == t[1]:
-            valid_password = True
+    check = record_db.getTuple("computerUsage",sID)
+    if not check:
+        if t:
+            valid_user = True
+            if password == t[1]:
+                valid_password = True
+            
+        if not valid_user:
+            return 1, None
+        if not valid_password:
+            return 2, None
         
-    if not valid_user:
-        return 1, None
-    if not valid_password:
-        return 2, None
-    
-    usageRecordID = record_db.rowCount("ComputerUsage")
-    now = datetime.now()
-    loginTime = now.strftime("%Y-%m-%d, %H:%M:%S")
-    record_db.insertTuples("ComputerUsage", [[usageRecordID, cID, sID, loginTime, "null"]])
-    return 0, usageRecordID
+        usageRecordID = record_db.rowCount("ComputerUsage")
+        now = datetime.now()
+        loginTime = now.strftime("%Y-%m-%d, %H:%M:%S")
+        record_db.insertTuples("ComputerUsage", [[usageRecordID, cID, sID, loginTime, "null"]])
+        return 0, usageRecordID
+    return 6,None
 
 def handle_innerCode_login(record_db, info_db, jsonData):
     # get username and password
@@ -78,31 +80,35 @@ def handle_innerCode_login(record_db, info_db, jsonData):
     # check innerCode and studentID
     sID = None
     t = info_db.getTuple("Code", innerCode)
-    if t:
-        valid_innerCode = True
-        sID = t[1]
-    
-    # Return a response
-    if not valid_innerCode or not sID:
-        return 3, None
-    
-    usageRecordID = record_db.rowCount("ComputerUsage")
-    now = datetime.now()
-    loginTime = now.strftime("%Y-%m-%d, %H:%M:%S")
-    record_db.insertTuples("ComputerUsage", [[usageRecordID, cID, sID, loginTime, "null"]])
-    return 0, usageRecordID
+    check = info_db.getTuple("InnerCode",sID)
+    if not check:
+        if t:
+            valid_innerCode = True
+            sID = t[1]
+        
+        # Return a response
+        if not valid_innerCode or not sID:
+            return 3, None
+        
+        usageRecordID = record_db.rowCount("ComputerUsage")
+        now = datetime.now()
+        loginTime = now.strftime("%Y-%m-%d, %H:%M:%S")
+        record_db.insertTuples("ComputerUsage", [[usageRecordID, cID, sID, loginTime, "null"]])
+        return 0, usageRecordID
+    return 6,None
 
 def handle_devPass(record_db, jsonData):
     inp, cID = jsonData["DEV_TOKEN"], jsonData["computerID"]
     if DEV_TOKEN != inp:
         return 4, None
+    return 5,None
     
-    usageRecordID = record_db.rowCount("ComputerUsage")
-    now = datetime.now()
-    loginTime = now.strftime("%Y-%m-%d, %H:%M:%S")
-    # TODO: check if need to replace "Dev" to the name of the dev
-    record_db.insertTuples("ComputerUsage", [[usageRecordID, cID, "Dev", loginTime, "null"]])
-    return 0, usageRecordID
+    # usageRecordID = record_db.rowCount("ComputerUsage")
+    # now = datetime.now()
+    # loginTime = now.strftime("%Y-%m-%d, %H:%M:%S")
+    # # TODO: check if need to replace "Dev" to the name of the dev
+    # record_db.insertTuples("ComputerUsage", [[usageRecordID, cID, "Dev", loginTime, "null"]])
+    # return 0, usageRecordID
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
