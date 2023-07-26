@@ -1,6 +1,5 @@
-- [ ]: backgound running
-- [x]: split the background program and UI, use background program to start the UI
-- [x]: test ServerHandler
-- [ ]: handle repeating login requests from the identical computer
-- [x]: Deal with server
+- [ ]: Test BGService.exe running as Windows Service
+- [ ]: Handle repeating login requests from the identical computer
 - [ ]: log closing errors to the database
+- [x]: save urls in a file
+- [ ]: Adjust the behavior of the UI responding to the status code returned by the server

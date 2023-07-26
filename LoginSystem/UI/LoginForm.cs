@@ -1,7 +1,7 @@
 using System;
 using System.Net.Http;
 
-namespace LoginSystem
+namespace LoginUI
 {
     public class LoginForm : TableLayoutPanel
     {
@@ -12,7 +12,6 @@ namespace LoginSystem
         private Button _btnLogin = new Button();
         private Label _errorLabel = new Label();
         private ServerHandler _sh;
-        private const string _endPoint = "/submit/account_login";
         public LoginForm(ServerHandler sh)
         {
             _sh = sh;
@@ -42,12 +41,6 @@ namespace LoginSystem
             _errorLabel.TextAlign = ContentAlignment.MiddleCenter;
         }
 
-        // public void errorMannualClosing()
-        // {
-        //     _errorLabel.ForeColor = Color.Red;
-        //     _errorLabel.Text = "Form cannot be closed manually!";
-        // }
-
         private async void onSubmit(object? sender, EventArgs e)
         {
             Dictionary<string, object> payload = new Dictionary<string, object>()
@@ -55,7 +48,7 @@ namespace LoginSystem
                 {"account", _txtUsername.Text},
                 {"password", _txtPassword.Text}
             };
-            int status_code = await _sh.submit(payload, _endPoint);
+            int status_code = await _sh.submit(payload, Settings.LoginForm_endpoint);
 
             switch(status_code)
             {

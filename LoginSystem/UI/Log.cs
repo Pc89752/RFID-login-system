@@ -1,6 +1,6 @@
 using System.IO;
 
-namespace LoginSystem
+namespace LoginUI
 {
     class Log
     {

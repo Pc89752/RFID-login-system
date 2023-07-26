@@ -1,12 +1,11 @@
 using System.Net.Http;
 using Newtonsoft.Json;
 
-namespace LoginSystem
+namespace LoginUI
 {
     public class ServerHandler
     {
         private string _serverUri;
-        // TODO: check if usageRecordID normal
         private string _computerID;
         public ServerHandler(string serverUri, string computerID)
         {
@@ -41,13 +40,9 @@ namespace LoginSystem
                 if(rDict.ContainsKey("status_code"))
                     status_code = Convert.ToInt32(rDict["status_code"]);
                 else Log.log("ERROR", "Recieving message from server", new Exception("no status_code"), null);
+                // TODO: Handle when status_code is 0 but rDict doesn't key "usageRecordID"
                 if(status_code == 0 && rDict.ContainsKey("usageRecordID"))
-                {
-                    // TODO: check if usageRecordID normal
-                    var usageRecordID = Convert.ToInt32(rDict["usageRecordID"]);
-                    // TODO: uncomment this line before officially run
-                    // Environment.Exit(usageRecordID);
-                }
+                    LoginUI.recieveusageRecordID(Convert.ToInt32(rDict["usageRecordID"]));
                 return status_code;
             }
         }

@@ -1,7 +1,7 @@
 using System;
 using System.Net.Http;
 
-namespace LoginSystem
+namespace LoginUI
 {
     public class DevPass : TableLayoutPanel
     {
@@ -10,7 +10,6 @@ namespace LoginSystem
         private TextBox _txtKey = new TextBox();
         private Button _btnLogin = new Button();
         private ServerHandler _sh;
-        private const string _endPoint = "/submit/devPass";
         public DevPass(ServerHandler sh)
         {
             _sh = sh;
@@ -46,7 +45,7 @@ namespace LoginSystem
             {
                 {"DEV_TOKEN", _txtKey.Text}
             };
-            int status_code = await _sh.submit(payload, _endPoint);
+            int status_code = await _sh.submit(payload, Settings.DevPass_endpoint);
 
             switch(status_code)
             {

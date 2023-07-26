@@ -3,17 +3,16 @@ using System.Threading;
 using System.Management;
 using System.Diagnostics;
 
-namespace LoginSystem
+namespace LoginUI
 {
     public class RFIDReader : TableLayoutPanel
     {
         private Label _stateLabel = new Label();
         private Thread? _thread;
         private string _innerCode = "";
-        private string _exePath = @"C:\Program Files\NfcCode\NfcCode.exe";
+        private string _exePath = Settings.NFcCode_path;
         private Process? _process;
         private ServerHandler _sh;
-        private const string _endPoint = "/submit/innerCode_login";
         private bool _processRunning = false;
         public RFIDReader(ServerHandler sh)
         {
@@ -63,7 +62,7 @@ namespace LoginSystem
             _processRunning = true;
             _thread = new Thread(() => readInput());
             _thread.Start();
-            Console.WriteLine("Started Reading");
+            Console.WriteLine("");
         }
 
         private async void readInput()
@@ -90,7 +89,7 @@ namespace LoginSystem
             {
                 {"innerCode", _innerCode}
             };
-            int status_code = await _sh.submit(payload, _endPoint);
+            int status_code = await _sh.submit(payload, Settings.RFIDReader_endpoint);
 
             switch(status_code)
             {

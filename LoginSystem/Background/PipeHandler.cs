@@ -17,7 +17,7 @@ namespace BGService
                 try
                 {
                     value = pipeServer.ReadByte();
-                    pipeServer.Dispose();
+                    pipeServer.Disconnect();
                 }
                 catch (Exception ex)
                 {

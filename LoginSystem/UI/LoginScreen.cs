@@ -1,31 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Windows.Forms;
-using Microsoft.Win32;
+// using System.Data;
+// using System.Drawing;
+// using System.Linq;
+// using System.Text;
+// using System.Windows.Forms;
+// using Microsoft.Win32;
 
-namespace LoginSystem
+namespace LoginUI
 {
     public class LoginScreen : Form
     {
-        // private string? _serverUri;
-        private ServerHandler _sh;
         private LoginForm _loginForm;
         private RFIDReader _RFID_reader;
         private DevPass _devPass;
         private TabControl tc = new TabControl();
         private int tc_index = 0;
-        // private const string startTimeRoute = "/startTime/";
         public LoginScreen(ServerHandler sh)
         {
-            _sh = sh;
-            _RFID_reader = new RFIDReader(_sh);
-            _loginForm = new LoginForm(_sh);
-            _devPass = new DevPass(_sh);
+            _RFID_reader = new RFIDReader(sh);
+            _loginForm = new LoginForm(sh);
+            _devPass = new DevPass(sh);
             InitializeComponent();
         }
 
@@ -76,7 +72,7 @@ namespace LoginSystem
             loginPage.Font = new Font("Verdana", 12);
             tc.TabPages.Add(loginPage);
 
-            // Adding walkway to the tab
+            // Adding devPass to the tab
             TableLayoutPanel devPassPanel = new TableLayoutPanel();
             devPassPanel.Dock = DockStyle.Top;
             devPassPanel.AutoSize = true;
@@ -130,17 +126,6 @@ namespace LoginSystem
         private void cleaning(object? sender, FormClosingEventArgs e)
         {
             if(_RFID_reader != null) _RFID_reader.CloseProcess();
-        }
-
-        // XXX: Testing
-        [STAThread]
-        static void Main()
-        {
-            ServerHandler sh = new ServerHandler("http://127.0.0.1:5000/", "MyComputer");
-            LoginScreen loginScreen = new LoginScreen(sh);
-            Application.EnableVisualStyles();
-            // Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(loginScreen);
         }
     }
 }
