@@ -42,7 +42,7 @@ namespace LoginUI
                 else Log.log("ERROR", "Recieving message from server", new Exception("no status_code"), null);
                 // TODO: Handle when status_code is 0 but rDict doesn't key "usageRecordID"
                 if(status_code == 0 && rDict.ContainsKey("usageRecordID"))
-                    LoginUI.recieveusageRecordID(Convert.ToInt32(rDict["usageRecordID"]));
+                    LoginUI.recieve_usageRecordID(Convert.ToInt32(rDict["usageRecordID"]));
                 return status_code;
             }
         }

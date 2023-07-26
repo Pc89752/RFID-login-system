@@ -5,11 +5,19 @@ namespace BGService
 {
     class PipeHandler
     {
-        public static int ReceiveDataAsync(string pipe_name)
+        public static async Task<int> ReceiveDataAsync(string pipe_name)
         {
-            var pipeServer = new NamedPipeServerStream(pipe_name, PipeDirection.In);
-            pipeServer.WaitForConnectionAsync().Wait();
-            var reader = new StreamReader(pipeServer);
+            using (var pipeServer = new NamedPipeServerStream(pipe_name, PipeDirection.In, 1, PipeTransmissionMode.Byte, PipeOptions.Asynchronous))
+            {
+                // Wait for a client to connect asynchronously.
+                await pipeServer.WaitForConnectionAsync();
+
+                // When a client connects, continue with further actions.
+                return await HandlePipeAsync(pipeServer);
+            }
+        }
+        private static async Task<int> HandlePipeAsync(NamedPipeServerStream pipeServer)
+        {
             while (true)
             {
                 // Read data from the named pipe asynchronously
@@ -17,15 +25,16 @@ namespace BGService
                 try
                 {
                     value = pipeServer.ReadByte();
-                    pipeServer.Disconnect();
+                    await pipeServer.DisposeAsync();
                 }
                 catch (Exception ex)
                 {
                     BGService.logger.Error("An error occured during reading value from pipe", ex.ToString());
-                    Thread.CurrentThread.Interrupt();
+                    break;
                 }
                 return value;
             }
+            return -1;
         }
     }
 }

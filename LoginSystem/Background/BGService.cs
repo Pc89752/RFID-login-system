@@ -10,15 +10,14 @@ namespace BGService
     {
         // TODO: Get the Uri of server
         private const string _serverUrl = @"http://127.0.0.1:5000/closeReport/";
-        public static ILogger logger;
         // TODO: Get the computer ID
         private const string _computerID = @"MyComputer";
         const string LOG_FOLDER = @"/LoginSystem/log";
         private const string PIPE_NAME = "LoginSystem_UI";
         // private const string exe_path = @"C:\Program Files\LoginSystem\LoginUI.exe";
         private const string exe_path = @"C:\Users\91a04\OneDrive\文件\GitHub\RFID-login-system\LoginSystem\UI\bin\Debug\net7.0-windows\LoginUI.exe";
-        private static int usageRecordID = -1;
-        private static Thread thread_reciveRecordID = new Thread(reciveReordID);
+        public static ILogger logger;
+        private static int usageRecordID = -2;
         static BGService()
         {
             string logFolder = Environment.GetFolderPath(Environment.SpecialFolder.CommonDocuments) + LOG_FOLDER;
@@ -62,11 +61,12 @@ namespace BGService
             logger.Information("UI Started");
         }
 
-        private static void reciveReordID()
+        private static async Task<int> reciveReordID()
         {
             Console.WriteLine("Recieving");
-            usageRecordID = PipeHandler.ReceiveDataAsync(PIPE_NAME);
+            usageRecordID =  await PipeHandler.ReceiveDataAsync(PIPE_NAME);
             Console.WriteLine($"Recieved: {usageRecordID}");
+            return usageRecordID;
         }
 
         protected override void OnStop()
@@ -106,11 +106,11 @@ namespace BGService
         }
         
         [STAThread]
-        static void Main()
+        static async Task Main()
         {
             // startUI();
-            thread_reciveRecordID.Start();
-            thread_reciveRecordID.Join();
+            usageRecordID = await reciveReordID();
+            Console.WriteLine(usageRecordID);
             // XXX: Testing
             // Console.WriteLine(usageRecordID);
         }
