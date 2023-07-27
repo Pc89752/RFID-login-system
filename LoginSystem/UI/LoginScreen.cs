@@ -125,7 +125,7 @@ namespace LoginUI
 
         private void cleaning(object? sender, FormClosingEventArgs e)
         {
-            if(_RFID_reader != null) _RFID_reader.CloseProcess();
+            if(_RFID_reader != null) _RFID_reader.stopReading();
         }
     }
 }

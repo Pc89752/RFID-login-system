@@ -8,7 +8,6 @@ namespace LoginUI
     public class RFIDReader : TableLayoutPanel
     {
         private Label _stateLabel = new Label();
-        private Thread? _thread;
         private string _innerCode = "";
         private string _exePath = Settings.NFcCode_path;
         private Process? _process;
@@ -29,20 +28,8 @@ namespace LoginUI
             _stateLabel.Text = "Waiting";
             Controls.Add(_stateLabel, 0, 0);
         }
-        public void stopReading()
-        {
-            if(_thread!=null) _thread.Join();
-            Console.WriteLine(_processRunning);
-            if(_processRunning && _process != null)
-            {
-                // Wait for the thread to finish before exiting
-                CloseProcess();
-                _processRunning = false;
-            }
-            Console.WriteLine("Stopped Reading");
-        }
 
-        public void CloseProcess()
+        public void stopReading()
         {
             if (cancellationTokenSource != null)
             {

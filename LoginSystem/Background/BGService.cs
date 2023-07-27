@@ -15,18 +15,18 @@ namespace BGService
         const string LOG_FOLDER = @"/LoginSystem/log";
         private const string PIPE_NAME = "LoginSystem_UI";
         // private const string exe_path = @"C:\Program Files\LoginSystem\LoginUI.exe";
-        private const string exe_path = @"C:\Users\91a04\OneDrive\文件\GitHub\RFID-login-system\LoginSystem\UI\bin\Debug\net7.0-windows\LoginUI.exe";
+        private readonly static string exe_path = @"\GitHub\RFID-login-system\LoginSystem\UI\bin\Debug\net7.0-windows\LoginUI.exe";
         public static ILogger logger;
         private static int usageRecordID = -2;
         static BGService()
         {
+            exe_path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + exe_path;
             string logFolder = Environment.GetFolderPath(Environment.SpecialFolder.CommonDocuments) + LOG_FOLDER;
             logger = new LoggerConfiguration()
                 .WriteTo.File($"{logFolder}/{{Date}}.log", rollingInterval: RollingInterval.Day)
                 .CreateLogger();
         }
 
-        // TODO: test pipeline
         protected override void OnStart(string[] args)
         {
             logger.Information("Background starting");
@@ -108,11 +108,9 @@ namespace BGService
         [STAThread]
         static async Task Main()
         {
-            // startUI();
+            startUI();
             usageRecordID = await reciveReordID();
             Console.WriteLine(usageRecordID);
-            // XXX: Testing
-            // Console.WriteLine(usageRecordID);
         }
 
     }
