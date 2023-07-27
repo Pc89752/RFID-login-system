@@ -13,19 +13,20 @@ namespace BGService
                 await pipeServer.WaitForConnectionAsync();
 
                 // When a client connects, continue with further actions.
-                return await HandlePipeAsync(pipeServer);
+                int value = readCodeFromPipe(pipeServer);
+                await pipeServer.DisposeAsync();
+                return value;
             }
         }
-        private static async Task<int> HandlePipeAsync(NamedPipeServerStream pipeServer)
+
+        private static int readCodeFromPipe(NamedPipeServerStream pipeServer)
         {
             while (true)
             {
-                // Read data from the named pipe asynchronously
                 int value = -1;
                 try
                 {
                     value = pipeServer.ReadByte();
-                    await pipeServer.DisposeAsync();
                 }
                 catch (Exception ex)
                 {
