@@ -7,14 +7,58 @@ namespace LoginUI
     {
         private string _serverUri;
         private string _computerID;
+        private enum ReturningCode: int
+        {
+            CONNECT_FAILED = -1,
+            SUCCESS = 0,
+            INVALID_USERNAME = 1,
+            INVALID_PASSWORD = 2,
+            INVALID_INNERCODE = 3,
+            INVALID_TOKEN = 4,
+            TOKEN_SUCCESS = 5,
+            USER_ID_INUSE = 6,
+            NO_RESPONOSE,
+            INVALID_RESPONSE,
+            NO_STATUS_CODE,
+            INVALID_STATUS_CODE,
+            NO_USAGE_RECORD_ID
+        }
+
+        private static readonly Dictionary<ReturningCode, Tuple<Color, string>> ReturningMessage = new Dictionary<ReturningCode, Tuple<Color, string>>()
+        {
+            // Internet issue
+            {ReturningCode.CONNECT_FAILED, new Tuple<Color, string>(Color.Orange, "Connect failed!")},
+
+            // Login success
+            {ReturningCode.SUCCESS, new Tuple<Color, string>(Color.Blue, "Success!")},
+            {ReturningCode.TOKEN_SUCCESS, new Tuple<Color, string>(Color.Blue, "Success")},
+
+            // Login failed
+            {ReturningCode.INVALID_USERNAME, new Tuple<Color, string>(Color.Red, "Invalid username!")},
+            {ReturningCode.INVALID_PASSWORD, new Tuple<Color, string>(Color.Red, "Invalid password!")},
+            {ReturningCode.INVALID_INNERCODE, new Tuple<Color, string>(Color.Red, "Invalid inner code!")},
+            {ReturningCode.INVALID_TOKEN, new Tuple<Color, string>(Color.Red, "Invalid token!")},
+
+            // Server internal error
+            {ReturningCode.NO_RESPONOSE, new Tuple<Color, string>(Color.Orange, "No response!")},
+            {ReturningCode.INVALID_RESPONSE, new Tuple<Color, string>(Color.Orange, "Invalid response!")},
+            {ReturningCode.NO_STATUS_CODE, new Tuple<Color, string>(Color.Orange, "No status code!")},
+            {ReturningCode.INVALID_STATUS_CODE, new Tuple<Color, string>(Color.Orange, "Invalid status code!")},
+            {ReturningCode.NO_USAGE_RECORD_ID, new Tuple<Color, string>(Color.Orange, "No usage record ID response!")},
+        };
+
         public ServerHandler(string serverUri, string computerID)
         {
             _serverUri = serverUri;
             _computerID = computerID;
         }
 
-        public async Task<int> submit(Dictionary<string, object> payloadDict, string endPoint)
+        // TODO: Add server internal error
+
+
+        public async Task<Tuple<Color, string>> submitAsync(Dictionary<string, object> payloadDict, string endPoint)
         {
+            // Connecting
             string? result = null;
             string serverUrl = _serverUri + endPoint;
             payloadDict.Add("computerID", _computerID);
@@ -29,22 +73,40 @@ namespace LoginUI
                 catch (System.Exception ex)
                 {
                     Log.log("ERROR", "Recieving message from server", ex, null);
-                    return -1;
+                    return ReturningMessage[ReturningCode.CONNECT_FAILED];
                 }
-
-                if(result == null) return -1;
-                Dictionary<string, object>? rDict = JsonConvert.DeserializeObject<Dictionary<string, object>>(result);
-                if(rDict == null) return -1;
-
-                int status_code = -1;
-                if(rDict.ContainsKey("status_code"))
-                    status_code = Convert.ToInt32(rDict["status_code"]);
-                else Log.log("ERROR", "Recieving message from server", new Exception("no status_code"), null);
-                // TODO: Handle when status_code is 0 but rDict doesn't key "usageRecordID"
-                if(status_code == 0 && rDict.ContainsKey("usageRecordID"))
-                    LoginUI.recieve_usageRecordID(Convert.ToInt32(rDict["usageRecordID"]));
-                return status_code;
             }
+
+            // Handling response
+            if(result == null) return ReturningMessage[ReturningCode.NO_RESPONOSE];
+            Dictionary<string, object>? rDict = JsonConvert.DeserializeObject<Dictionary<string, object>>(result);
+            if(rDict == null) return ReturningMessage[ReturningCode.INVALID_RESPONSE];
+
+            ReturningCode returningCode;
+            if(rDict.ContainsKey("status_code"))
+            {
+                var status_code = Convert.ToInt32(rDict["status_code"]);
+                if(!Enum.TryParse<ReturningCode>(status_code.ToString(), out returningCode))
+                    return ReturningMessage[ReturningCode.INVALID_STATUS_CODE];
+            }
+            else return ReturningMessage[ReturningCode.NO_STATUS_CODE];
+            
+            switch(returningCode)
+            {
+                case ReturningCode.SUCCESS:
+                    if(rDict.ContainsKey("usageRecordID"))
+                        try
+                        {
+                            LoginUI.usageRecordID = Convert.ToInt32(rDict["usageRecordID"]);
+                        } catch(Exception) {}
+                    else return ReturningMessage[ReturningCode.NO_USAGE_RECORD_ID];
+                    break;
+                case ReturningCode.TOKEN_SUCCESS:
+                    break;
+                default:
+                    return ReturningMessage[ReturningCode.INVALID_STATUS_CODE];
+            }
+            return ReturningMessage[returningCode];
         }
     }
 }

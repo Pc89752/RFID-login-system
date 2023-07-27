@@ -31,7 +31,7 @@ namespace LoginUI
             SetColumnSpan(_errorLabel, 2);
 
             // onsubmit
-            _btnLogin.Click += onSubmit;
+            _btnLogin.Click += onSubmitAsync;
 
             // adding errorLabel
             _errorLabel.Font = new Font("Arial", 24,FontStyle.Bold);
@@ -41,37 +41,15 @@ namespace LoginUI
             _errorLabel.TextAlign = ContentAlignment.MiddleCenter;
         }
 
-        private async void onSubmit(object? sender, EventArgs e)
+        private async void onSubmitAsync(object? sender, EventArgs e)
         {
             Dictionary<string, object> payload = new Dictionary<string, object>()
             {
                 {"account", _txtUsername.Text},
                 {"password", _txtPassword.Text}
             };
-            int status_code = await _sh.submit(payload, Settings.LoginForm_endpoint);
-
-            switch(status_code)
-            {
-                case -1:
-                    _errorLabel.ForeColor = Color.Orange;
-                    _errorLabel.Text = "Connect failed!";
-                    break;
-                case 0:
-                    _errorLabel.ForeColor = Color.Blue;
-                    _errorLabel.Text = "Success!";
-                    break;
-                case 1:
-                    _errorLabel.ForeColor = Color.Red;
-                    _errorLabel.Text = "Invalid username!";
-                    break;
-                case 2:
-                    _errorLabel.ForeColor = Color.Red;
-                    _errorLabel.Text = "Invalid password!";
-                    break;
-                default:
-                    Log.log("ERROR", $"status_code: {status_code}", new Exception("status_code out of range"), null);
-                    break;
-            }
+            (_errorLabel.ForeColor, _errorLabel.Text) = await _sh.submitAsync(payload, Settings.LoginForm_endpoint);
+            await LoginUI.usageRecordID_loginAsync();
         }
 
         // [STAThread]
