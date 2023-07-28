@@ -32,10 +32,10 @@ namespace LoginUI
             this.SuspendLayout();
 
             // XXX: testing
-            // this.ControlBox=false;
-            this.WindowState = FormWindowState.Maximized;
-            // this.FormBorderStyle = FormBorderStyle.None;
             // this.TopMost = true;
+            // this.ControlBox=false;
+            this.FormBorderStyle = FormBorderStyle.None;
+            this.WindowState = FormWindowState.Maximized;
 
             // Adding tabs
             tc.Name = "DynamicTabControl";
@@ -94,38 +94,44 @@ namespace LoginUI
 
             // TODO: uncomment this line before officially run
             this.FormClosing += cleaning;
-            // this.FormClosing += preventUserClosing;
+            this.FormClosing += preventUserClosing;
 
             this.ResumeLayout(false);
             this.PerformLayout();
             _RFID_reader.startReading();
         }
 
-        private void preventUserClosing(object? sender, FormClosingEventArgs e)
+        private async void preventUserClosing(object? sender, FormClosingEventArgs e)
         {
             // Check the CloseReason
             if (e.CloseReason == CloseReason.UserClosing)
             {
-                e.Cancel = true;
-                // switch (tc_index)
-                // {
-                //     case 1:
-                //         if(_loginForm!=null) _loginForm.errorMannualClosing();
-                //         break;
-                // }
+                // XXX: Testing
+                // e.Cancel = true;
+                // XXX: Testing
+                await LoginUI.noReport_LoginAsync();
             }
         }
 
         private void tab_indexChanged(object? sender, EventArgs e)
         {
-            if(tc_index == 0 && _RFID_reader!=null) _RFID_reader.stopReading();
+            // Before change
+            if(_RFID_reader!=null)
+            {
+                if(tc_index == 0) _RFID_reader.stopReading();
+            }
             tc_index = tc.SelectedIndex;
-            if(tc_index == 0 && _RFID_reader!=null) _RFID_reader.startReading();
+
+            // After change
+            if(_RFID_reader!=null)
+            {
+                if(tc_index == 0) _RFID_reader.startReading();
+            }
         }
 
         private void cleaning(object? sender, FormClosingEventArgs e)
         {
-            if(_RFID_reader != null) _RFID_reader.stopReading();
+            if(tc.SelectedIndex == 0) _RFID_reader.stopReading();
         }
     }
 }
