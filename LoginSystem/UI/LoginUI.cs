@@ -1,4 +1,5 @@
 using System.IO.Pipes;
+using Serilog;
 
 namespace LoginUI
 {
@@ -8,8 +9,14 @@ namespace LoginUI
         private static LoginScreen loginScreen;
         public static int usageRecordID = -1;
         private static string PIPE_NAME;
+        public static ILogger logger;
+        private static string LOG_FOLDER = @"/LoginSystem/log/LoginUI";
         static LoginUI()
         {
+            string logFolder = Environment.GetFolderPath(Environment.SpecialFolder.CommonDocuments) + LOG_FOLDER;
+            logger = new LoggerConfiguration()
+                .WriteTo.File($"{logFolder}/{{Date}}.log", rollingInterval: RollingInterval.Day)
+                .CreateLogger();
             sh = new ServerHandler("http://127.0.0.1:5000/", "MyComputer");
             loginScreen = new LoginScreen(sh);
             PIPE_NAME = Environment.GetEnvironmentVariable("pipe_name")!;
@@ -33,22 +40,17 @@ namespace LoginUI
         {
             NamedPipeClientStream pipeClient = new NamedPipeClientStream(".", PIPE_NAME, PipeDirection.Out, PipeOptions.Asynchronous);
             await pipeClient.ConnectAsync();
-            pipeClient.WriteByte(Convert.ToByte(data));
+            byte[] dataArr = BitConverter.GetBytes(data);
+            await pipeClient.WriteAsync(dataArr, 0, 4);
             await pipeClient.DisposeAsync();
         }
 
-        // XXX: Testing
         [STAThread]
-        // static async Task Main()
         static void Main()
         {
             Application.EnableVisualStyles();
             // Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(loginScreen);
-
-            // Console.WriteLine("Sending");
-            // await sendData(PIPE_NAME, 33);
-            // Console.WriteLine("Sent");
         }
 
     }

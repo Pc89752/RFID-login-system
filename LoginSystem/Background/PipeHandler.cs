@@ -13,24 +13,26 @@ namespace BGService
                 await pipeServer.WaitForConnectionAsync();
 
                 // When a client connects, continue with further actions.
-                int value = readCodeFromPipe(pipeServer);
+                int value = await readCodeFromPipe(pipeServer);
                 await pipeServer.DisposeAsync();
                 return value;
             }
         }
 
-        private static int readCodeFromPipe(NamedPipeServerStream pipeServer)
+        private static async Task<int> readCodeFromPipe(NamedPipeServerStream pipeServer)
         {
             while (true)
             {
                 int value = -1;
                 try
                 {
-                    value = pipeServer.ReadByte();
+                    byte[] dataArr = new byte[4];
+                    await pipeServer.ReadAsync(dataArr, 0 , 4);
+                    value = BitConverter.ToInt32(dataArr);
                 }
                 catch (Exception ex)
                 {
-                    BGService.logger.Error("An error occured during reading value from pipe", ex.ToString());
+                    BGService.logger.Error(ex, "An error occured during reading value from pipe", ex.Message);
                     break;
                 }
                 return value;
