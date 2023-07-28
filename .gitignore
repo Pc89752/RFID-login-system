@@ -1,7 +1,5 @@
 server/__pycache__/
 server/myenv/
 
-LoginSystem/Background/bin/
-LoginSystem/Background/obj/
-LoginSystem/UI/bin/
-LoginSystem/UI/obj/
+LoginSystem/*/bin/
+LoginSystem/*/obj/

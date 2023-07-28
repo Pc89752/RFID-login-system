@@ -31,7 +31,7 @@ namespace LoginUI
 
             // Login success
             {ReturningCode.SUCCESS, new Tuple<Color, string>(Color.Blue, "Success!")},
-            {ReturningCode.TOKEN_SUCCESS, new Tuple<Color, string>(Color.Blue, "Success")},
+            {ReturningCode.TOKEN_SUCCESS, new Tuple<Color, string>(Color.Blue, "Token login Success")},
 
             // Login failed
             {ReturningCode.INVALID_USERNAME, new Tuple<Color, string>(Color.Red, "Invalid username!")},
@@ -53,9 +53,6 @@ namespace LoginUI
             _computerID = computerID;
         }
 
-        // TODO: Add server internal error
-
-
         public async Task<Tuple<Color, string>> submitAsync(Dictionary<string, object> payloadDict, string endPoint)
         {
             // Connecting
@@ -72,7 +69,7 @@ namespace LoginUI
                 }
                 catch (System.Exception ex)
                 {
-                    Log.log("ERROR", "Recieving message from server", ex, null);
+                    LoginUI.logger.Error("Recieving message from server", ex.ToString());
                     return ReturningMessage[ReturningCode.CONNECT_FAILED];
                 }
             }

@@ -102,13 +102,6 @@ def handle_devPass(record_db, jsonData):
     if DEV_TOKEN != inp:
         return 4, None
     return 5,None
-    
-    # usageRecordID = record_db.rowCount("ComputerUsage")
-    # now = datetime.now()
-    # loginTime = now.strftime("%Y-%m-%d, %H:%M:%S")
-    # # TODO: check if need to replace "Dev" to the name of the dev
-    # record_db.insertTuples("ComputerUsage", [[usageRecordID, cID, "Dev", loginTime, "null"]])
-    # return 0, usageRecordID
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)

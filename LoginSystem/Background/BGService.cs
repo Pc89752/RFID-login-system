@@ -2,7 +2,6 @@
 using System.ServiceProcess;
 using System.Diagnostics;
 using Serilog;
-using System.IO.Pipes;
 
 namespace BGService
 {
@@ -12,7 +11,7 @@ namespace BGService
         private const string _serverUrl = @"http://127.0.0.1:5000/closeReport/";
         // TODO: Get the computer ID
         private const string _computerID = @"MyComputer";
-        const string LOG_FOLDER = @"/LoginSystem/log";
+        const string LOG_FOLDER = @"/LoginSystem/log/BGS";
         private const string PIPE_NAME = "LoginSystem_UI";
         // private const string exe_path = @"C:\Program Files\LoginSystem\LoginUI.exe";
         private readonly static string exe_path = @"\GitHub\RFID-login-system\LoginSystem\UI\bin\Debug\net7.0-windows\LoginUI.exe";
