@@ -109,7 +109,7 @@ namespace LoginUI
                 // XXX: Testing
                 // e.Cancel = true;
                 // XXX: Testing
-                await LoginUI.noReport_LoginAsync();
+                await LoginUI.usageRecordID_ReportAsync();
             }
         }
 

@@ -49,7 +49,7 @@ namespace LoginUI
                 {"password", _txtPassword.Text}
             };
             (_errorLabel.ForeColor, _errorLabel.Text) = await _sh.submitAsync(payload, Settings.LoginForm_endpoint);
-            await LoginUI.usageRecordID_loginAsync();
+            await LoginUI.usageRecordID_ReportAsync();
         }
 
         // [STAThread]

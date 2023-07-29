@@ -47,7 +47,7 @@ namespace LoginUI
                 {"DEV_TOKEN", _txtKey.Text}
             };
             (_errorLabel.ForeColor, _errorLabel.Text) = await _sh.submitAsync(payload, Settings.DevPass_endpoint);
-            await LoginUI.noReport_LoginAsync();
+            await LoginUI.usageRecordID_ReportAsync();
         }
 
         // [STAThread]

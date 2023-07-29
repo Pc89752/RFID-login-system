@@ -89,7 +89,7 @@ namespace LoginUI
                 {"innerCode", _innerCode}
             };
             (_stateLabel.ForeColor, _stateLabel.Text) = await _sh.submitAsync(payload, Settings.RFIDReader_endpoint);
-            await LoginUI.usageRecordID_loginAsync();
+            await LoginUI.usageRecordID_ReportAsync();
         }
     }
 }

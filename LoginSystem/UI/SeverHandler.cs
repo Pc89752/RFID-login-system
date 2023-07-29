@@ -31,7 +31,7 @@ namespace LoginUI
 
             // Login success
             {ReturningCode.SUCCESS, new Tuple<Color, string>(Color.Blue, "Success!")},
-            {ReturningCode.TOKEN_SUCCESS, new Tuple<Color, string>(Color.Blue, "Token login Success")},
+            {ReturningCode.TOKEN_SUCCESS, new Tuple<Color, string>(Color.Blue, "Success")},
 
             // Login failed
             {ReturningCode.INVALID_USERNAME, new Tuple<Color, string>(Color.Red, "Invalid username!")},

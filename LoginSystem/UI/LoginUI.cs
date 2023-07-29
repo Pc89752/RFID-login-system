@@ -6,9 +6,10 @@ namespace LoginUI
     class LoginUI
     {
         private static ServerHandler sh;
-        private static LoginScreen loginScreen;
+        // private static LoginScreen loginScreen;
         public static int usageRecordID = -1;
-        private static string PIPE_NAME;
+        // Set Global to communicate within sessions
+        private const string PIPE_NAME = @"\\.\pipe\Global\LoginSystem_UI";
         public static ILogger logger;
         private static string LOG_FOLDER = @"/LoginSystem/log/LoginUI";
         static LoginUI()
@@ -18,22 +19,13 @@ namespace LoginUI
                 .WriteTo.File($"{logFolder}/{{Date}}.log", rollingInterval: RollingInterval.Day)
                 .CreateLogger();
             sh = new ServerHandler("http://127.0.0.1:5000/", "MyComputer");
-            loginScreen = new LoginScreen(sh);
-            PIPE_NAME = Environment.GetEnvironmentVariable("pipe_name")!;
-            PIPE_NAME = "LoginSystem_UI";
+            // loginScreen = new LoginScreen(sh);
         }
 
-        public static async Task usageRecordID_loginAsync()
+        public static async Task usageRecordID_ReportAsync()
         {
-            if(usageRecordID == -1) return;
             await sendDataAsync(PIPE_NAME, usageRecordID);
-            loginScreen.Close();
-        }
-
-        public static async Task noReport_LoginAsync()
-        {
-            await sendDataAsync(PIPE_NAME, -1);
-            loginScreen.Close();
+            // loginScreen.Close();
         }
 
         private static async Task sendDataAsync(string pipe_name, int data)
@@ -48,9 +40,10 @@ namespace LoginUI
         [STAThread]
         static void Main()
         {
-            Application.EnableVisualStyles();
-            // Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(loginScreen);
+            // Application.EnableVisualStyles();
+            // // Application.SetCompatibleTextRenderingDefault(false);
+            // Application.Run(loginScreen);
+            LoginUI.usageRecordID_ReportAsync().Wait();
         }
 
     }
