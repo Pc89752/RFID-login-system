@@ -1,7 +1,7 @@
 server/__pycache__/
 server/myenv/
 
-LoginSystem/*/bin/
-LoginSystem/*/obj/
+client/*/bin/
+client/*/obj/
 
 Test
