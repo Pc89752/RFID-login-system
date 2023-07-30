@@ -31,7 +31,7 @@ namespace LoginUI
 
             // Login success
             {ReturningCode.SUCCESS, new Tuple<Color, string>(Color.Blue, "Success!")},
-            {ReturningCode.TOKEN_SUCCESS, new Tuple<Color, string>(Color.Blue, "Success")},
+            {ReturningCode.TOKEN_SUCCESS, new Tuple<Color, string>(Color.Blue, "Success!")},
 
             // Login failed
             {ReturningCode.INVALID_USERNAME, new Tuple<Color, string>(Color.Red, "Invalid username!")},
@@ -47,13 +47,25 @@ namespace LoginUI
             {ReturningCode.NO_USAGE_RECORD_ID, new Tuple<Color, string>(Color.Orange, "No usage record ID response!")},
         };
 
+        private static readonly List<ReturningCode> successCodes = new List<ReturningCode>()
+        {
+            ReturningCode.SUCCESS,
+            ReturningCode.TOKEN_SUCCESS,
+        };
+
         public ServerHandler(string serverUri, string computerID)
         {
             _serverUri = serverUri;
             _computerID = computerID;
         }
 
-        public async Task<Tuple<Color, string>> submitAsync(Dictionary<string, object> payloadDict, string endPoint)
+        private (bool, Color, string) getReturningData(ReturningCode code)
+        {
+            var vt = ReturningMessage[code];
+            return (successCodes.Contains(code), vt.Item1, vt.Item2);
+        }
+
+        public async Task<(bool, Color, string)> submitAsync(Dictionary<string, object> payloadDict, string endPoint)
         {
             // Connecting
             string? result = null;
@@ -67,27 +79,25 @@ namespace LoginUI
                     var response = await client.PostAsync(serverUrl, new StringContent(payload));
                     if(response!=null) result = await response.Content.ReadAsStringAsync();
                 }
-                catch (System.Exception ex)
+                catch (Exception ex)
                 {
-                    LoginUI.logger.Error("Recieving message from server", ex.ToString());
-                    return ReturningMessage[ReturningCode.CONNECT_FAILED];
+                    LoginUI.logger.Error(ex, "Recieving message from server, {StackTrace}", ex.Message);
+                    return getReturningData(ReturningCode.CONNECT_FAILED);
                 }
             }
 
             // Handling response
-            if(result == null) return ReturningMessage[ReturningCode.NO_RESPONOSE];
+            if(result == null) return getReturningData(ReturningCode.NO_RESPONOSE);
             Dictionary<string, object>? rDict = JsonConvert.DeserializeObject<Dictionary<string, object>>(result);
-            if(rDict == null) return ReturningMessage[ReturningCode.INVALID_RESPONSE];
+            if(rDict == null) return getReturningData(ReturningCode.INVALID_RESPONSE);
 
-            ReturningCode returningCode;
-            if(rDict.ContainsKey("status_code"))
-            {
-                var status_code = Convert.ToInt32(rDict["status_code"]);
-                if(!Enum.TryParse<ReturningCode>(status_code.ToString(), out returningCode))
-                    return ReturningMessage[ReturningCode.INVALID_STATUS_CODE];
-            }
-            else return ReturningMessage[ReturningCode.NO_STATUS_CODE];
+            if(!rDict.ContainsKey("status_code")) return getReturningData(ReturningCode.NO_STATUS_CODE);
+
+            var status_code = Convert.ToInt32(rDict["status_code"]);
+            if(!Enum.IsDefined(typeof(ReturningCode), status_code))
+                return getReturningData(ReturningCode.INVALID_STATUS_CODE);
             
+            ReturningCode returningCode = (ReturningCode)status_code;
             switch(returningCode)
             {
                 case ReturningCode.SUCCESS:
@@ -96,14 +106,12 @@ namespace LoginUI
                         {
                             LoginUI.usageRecordID = Convert.ToInt32(rDict["usageRecordID"]);
                         } catch(Exception) {}
-                    else return ReturningMessage[ReturningCode.NO_USAGE_RECORD_ID];
+                    else return getReturningData(ReturningCode.NO_USAGE_RECORD_ID);
                     break;
                 case ReturningCode.TOKEN_SUCCESS:
                     break;
-                default:
-                    return ReturningMessage[ReturningCode.INVALID_STATUS_CODE];
             }
-            return ReturningMessage[returningCode];
+            return getReturningData(returningCode);
         }
     }
 }

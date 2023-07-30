@@ -1,0 +1,13 @@
+{
+	"ComputerName": "MyComputer",
+    "URL": {
+        "URI": "http://192.168.100.2:5000",
+        "endpoint": {
+            "RFIDReader": "/submit/innerCode_login",
+            "LoginForm": "/submit/account_login",
+            "DevPass": "/submit/devPass",
+			"CloseReport": "/closeReport"
+        }
+    },
+    "NFcCode_path": "C:\\Program Files (x86)\\InfoThink\\NfcCode\\NfcCode.exe"
+}

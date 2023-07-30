@@ -5,9 +5,8 @@ using System.IO.Pipes;
 public sealed class BGService
 {
     // TODO: Get the Uri of server
-    private const string _serverUrl = @"http://127.0.0.1:5000/closeReport/";
+    private readonly static string _serverUrl = Settings.URI + Settings.CloseReport_endpoint;
     // TODO: Get the computer ID
-    private const string _computerID = @"MyComputer";
     // Set Global to communicate within sessions
     private const string PIPE_NAME = @"\\.\pipe\Global\LoginSystem_UI";
     // private readonly string exe_path = @"\GitHub\RFID-login-system\LoginSystem\UI\bin\Debug\net7.0-windows\LoginUI.exe";
@@ -21,7 +20,7 @@ public sealed class BGService
         // Console.WriteLine($"Recieved: {usageRecordID}");
     }
 
-    public async void returnClosing()
+    public async Task returnClosing()
     {
         try
         {

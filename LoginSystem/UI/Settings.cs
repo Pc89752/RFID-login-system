@@ -8,6 +8,7 @@ namespace LoginUI
         // TODO: set path of UI_settings.json in document folder
         private const string SETTINGS_PATH = @"/LoginSystem/settings.json";
         // private const string SETTINGS_PATH = @"/settings.json";
+        public static readonly string ComputerName;
         public static readonly string URI;
         public static readonly string RFIDReader_endpoint;
         public static readonly string LoginForm_endpoint;
@@ -27,6 +28,7 @@ namespace LoginUI
                 {
                     throw new Exception("Failed to deserialize JSON into JObject.");
                 }
+                ComputerName = GetValue<string>(data, "ComputerName")!;
                 URI = GetValue<string>(data, "URL.URI")!;
                 RFIDReader_endpoint = GetValue<string>(data, "URL.endpoint.RFIDReader")!;
                 LoginForm_endpoint = GetValue<string>(data, "URL.endpoint.LoginForm")!;
@@ -45,7 +47,7 @@ namespace LoginUI
                 if (value is not JObject obj || !obj.TryGetValue(key, out value))
                 {
                     // Optionally throw an exception if any key is required
-                    throw new KeyNotFoundException($"Key '{key}' not found in the dictionary.");
+                    throw new KeyNotFoundException($"Key '{keyPath}' not found in the dictionary.");
                 }
             }
 

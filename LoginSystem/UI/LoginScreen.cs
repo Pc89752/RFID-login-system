@@ -101,15 +101,13 @@ namespace LoginUI
             _RFID_reader.startReading();
         }
 
-        private async void preventUserClosing(object? sender, FormClosingEventArgs e)
+        private void preventUserClosing(object? sender, FormClosingEventArgs e)
         {
             // Check the CloseReason
             if (e.CloseReason == CloseReason.UserClosing)
             {
                 // XXX: Testing
                 // e.Cancel = true;
-                // XXX: Testing
-                await LoginUI.usageRecordID_ReportAsync();
             }
         }
 

@@ -50,9 +50,14 @@ public sealed class WindowsBackgroundService : BackgroundService
         }
     }
 
-    public override Task StopAsync(CancellationToken stoppingToken)
+    public override async Task StopAsync(CancellationToken stoppingToken)
     {
-        _BGService.returnClosing();
-        return Task.CompletedTask;
+        if(_BGService.UsageRecordID == -1)
+        {
+            _logger.LogWarning("usageRecord is -1, no return");
+            return;
+        };
+        await _BGService.returnClosing();
+        _logger.LogWarning("Returned usageRecord");
     }
 }
