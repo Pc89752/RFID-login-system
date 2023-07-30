@@ -149,6 +149,19 @@ class DB():
             print(e.with_traceback())
             return None
         
+    def delete_tuple(self,table_name,pk):
+        cursor = self.conn.cursor()
+        try:
+            pk_col = self.find_pk_col(table_name)
+            query = f"DELETE FROM {table_name} WHERE {pk_col} = ?"
+            cursor.execute(query, (pk,))
+            self.conn.commit()
+            return True
+        except Exception as e:
+            print(f"刪除 tuple 時發生錯誤：{e}")
+            return False
+        
+        
 def reCreateTableFromJson(db, json_path):
     db.dropTable(json_path)
     db.createTableFromJson(json_path)
@@ -159,19 +172,26 @@ if __name__ == "__main__":
     import os.path
     parent = str(Path(__file__).parent.absolute())
     account_json_path  = os.path.join(parent, "student_account.json")
-    computer_usage_path = os.path.join(parent, "computer_usage.json")
+    records_path = os.path.join(parent, "records.json")
     innerCode_path = os.path.join(parent, "Inner_code.json")
+    computer_usage_path = os.path.join(parent,"computer_usage.json")
     
     # Build "StudentINFO.db"
     info_db_path = os.path.join(parent, "StudentINFO.db")
     info_db = DB(info_db_path)
     reCreateTableFromJson(info_db, account_json_path)
     reCreateTableFromJson(info_db, innerCode_path)
+    info_db.delete_tuple("StudentAccount","U10916001")
     
     # Build "ComputerUsage.db"
     usage_db_path = os.path.join(parent, "ComputerUsage.db")
     usage_db = DB(usage_db_path)
-    reCreateTableFromJson(usage_db, computer_usage_path)
+    reCreateTableFromJson(usage_db, records_path)
+    reCreateTableFromJson(usage_db,computer_usage_path)
+    
+    
+    
+    
     
     
     # insertTuples("ComputerUsage",[[12356, 12345, 12358, 456789, 1]])

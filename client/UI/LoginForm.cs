@@ -1,7 +1,7 @@
 using System;
 using System.Net.Http;
 
-namespace LoginSystem
+namespace LoginUI
 {
     public class LoginForm : TableLayoutPanel
     {
@@ -12,7 +12,6 @@ namespace LoginSystem
         private Button _btnLogin = new Button();
         private Label _errorLabel = new Label();
         private ServerHandler _sh;
-        private const string _endPoint = "/submit/account_login";
         public LoginForm(ServerHandler sh)
         {
             _sh = sh;
@@ -32,7 +31,7 @@ namespace LoginSystem
             SetColumnSpan(_errorLabel, 2);
 
             // onsubmit
-            _btnLogin.Click += onSubmit;
+            _btnLogin.Click += onSubmitAsync;
 
             // adding errorLabel
             _errorLabel.Font = new Font("Arial", 24,FontStyle.Bold);
@@ -42,43 +41,16 @@ namespace LoginSystem
             _errorLabel.TextAlign = ContentAlignment.MiddleCenter;
         }
 
-        // public void errorMannualClosing()
-        // {
-        //     _errorLabel.ForeColor = Color.Red;
-        //     _errorLabel.Text = "Form cannot be closed manually!";
-        // }
-
-        private async void onSubmit(object? sender, EventArgs e)
+        private async void onSubmitAsync(object? sender, EventArgs e)
         {
             Dictionary<string, object> payload = new Dictionary<string, object>()
             {
                 {"account", _txtUsername.Text},
                 {"password", _txtPassword.Text}
             };
-            int status_code = await _sh.submit(payload, _endPoint);
-
-            switch(status_code)
-            {
-                case -1:
-                    _errorLabel.ForeColor = Color.Orange;
-                    _errorLabel.Text = "Connect failed!";
-                    break;
-                case 0:
-                    _errorLabel.ForeColor = Color.Blue;
-                    _errorLabel.Text = "Success!";
-                    break;
-                case 1:
-                    _errorLabel.ForeColor = Color.Red;
-                    _errorLabel.Text = "Invalid username!";
-                    break;
-                case 2:
-                    _errorLabel.ForeColor = Color.Red;
-                    _errorLabel.Text = "Invalid password!";
-                    break;
-                default:
-                    Log.log("ERROR", $"status_code: {status_code}", new Exception("status_code out of range"), null);
-                    break;
-            }
+            bool isSuccess;
+            (isSuccess, _errorLabel.ForeColor, _errorLabel.Text) = await _sh.submitAsync(payload, Settings.LoginForm_endpoint);
+            if(isSuccess) await LoginUI.usageRecordID_ReportAsync();
         }
 
         // [STAThread]

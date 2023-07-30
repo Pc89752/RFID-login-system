@@ -1,7 +1,7 @@
 using System;
 using System.Net.Http;
 
-namespace LoginSystem
+namespace LoginUI
 {
     public class DevPass : TableLayoutPanel
     {
@@ -10,7 +10,7 @@ namespace LoginSystem
         private TextBox _txtKey = new TextBox();
         private Button _btnLogin = new Button();
         private ServerHandler _sh;
-        private const string _endPoint = "/submit/devPass";
+        private CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
         public DevPass(ServerHandler sh)
         {
             _sh = sh;
@@ -29,7 +29,7 @@ namespace LoginSystem
             _key.Text = "金鑰:";
             _txtKey.PasswordChar = '*';
             _btnLogin.Text = "Submit";
-            _btnLogin.Click += onSubmit;
+            _btnLogin.Click += onSubmitAsync;
             _txtKey.Width = 800;
             Controls.Add(_key, 0, 0);
             Controls.Add(_txtKey, 0, 1);
@@ -40,32 +40,15 @@ namespace LoginSystem
             Controls.Add(_errorLabel, 0, 3);
         }
 
-        private async void onSubmit(object? sender, EventArgs e)
+        private async void onSubmitAsync(object? sender, EventArgs e)
         {
             Dictionary<string, object> payload = new Dictionary<string, object>()
             {
                 {"DEV_TOKEN", _txtKey.Text}
             };
-            int status_code = await _sh.submit(payload, _endPoint);
-
-            switch(status_code)
-            {
-                case -1:
-                    _errorLabel.ForeColor = Color.Orange;
-                    _errorLabel.Text = "Connect failed!";
-                    break;
-                case 0:
-                    _errorLabel.ForeColor = Color.Blue;
-                    _errorLabel.Text = "Success!";
-                    break;
-                case 4:
-                    _errorLabel.ForeColor = Color.Red;
-                    _errorLabel.Text = "Invalid token!";
-                    break;
-                default:
-                    Log.log("ERROR", $"status_code: {status_code}", new Exception("status_code out of range"), null);
-                    break;
-            }
+            bool isSuccess;
+            (isSuccess, _errorLabel.ForeColor, _errorLabel.Text) = await _sh.submitAsync(payload, Settings.DevPass_endpoint);
+            if(isSuccess) await LoginUI.usageRecordID_ReportAsync();
         }
 
         // [STAThread]
