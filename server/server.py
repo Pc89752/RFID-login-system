@@ -46,7 +46,8 @@ def handle_close_report():
     usageRecordID =  jsonData["usageRecordID"]
     now = datetime.now()
     leaveTime = now.strftime("%Y-%m-%d, %H:%M:%S")
-    record_db.update_DB("ComputerUsage", usageRecordID, [("leaveTime", leaveTime)])
+    record_db.update_DB("records", usageRecordID, [("leaveTime", leaveTime)])
+    record_db.delete_tuple("ComputerUsage",jsonData["StudentId"])
 
 def handle_account_login(computer_usage_db, info_db, jsonData):
     # get username and password
