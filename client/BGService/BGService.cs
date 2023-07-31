@@ -1,6 +1,7 @@
 namespace App.WindowsService;
 
 using System.IO.Pipes;
+using Newtonsoft.Json;
 
 public sealed class BGService
 {
@@ -26,7 +27,13 @@ public sealed class BGService
         {
             using(var client = new HttpClient())
             {
-                await client.PostAsync(_serverUrl, new StringContent(Convert.ToString(usageRecordID)));
+                Dictionary<string, string> dict = new Dictionary<string, string>()
+                {
+                    {"usageRecordID", Convert.ToString(usageRecordID)}
+                };
+                string payload = JsonConvert.SerializeObject(dict);
+
+                await client.PostAsync(_serverUrl, new StringContent(payload));
             }
         }
         // catch (Exception ex)
