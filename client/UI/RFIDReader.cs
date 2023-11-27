@@ -66,8 +66,13 @@ namespace LoginUI
             LoginUI.logger.Information("Started Reading");
         }
 
-        private async Task readInputAsync(CancellationToken cancellationToken)
+        private void clearInput()
         {
+            while(!string.IsNullOrEmpty(Console.ReadLine()));
+        }
+
+        private async Task readInputAsync(CancellationToken cancellationToken)
+        {            
             while (!cancellationToken.IsCancellationRequested)
             {
                 string? inp = await Task.Run(() => Console.ReadLine());

@@ -38,6 +38,7 @@ namespace LoginUI
             {ReturningCode.INVALID_PASSWORD, new Tuple<Color, string>(Color.Red, "Invalid password!")},
             {ReturningCode.INVALID_INNERCODE, new Tuple<Color, string>(Color.Red, "Invalid inner code!")},
             {ReturningCode.INVALID_TOKEN, new Tuple<Color, string>(Color.Red, "Invalid token!")},
+            {ReturningCode.USER_ID_INUSE, new Tuple<Color, string>(Color.Red, "User id in use!")},
 
             // Server internal error
             {ReturningCode.NO_RESPONOSE, new Tuple<Color, string>(Color.Orange, "No response!")},
