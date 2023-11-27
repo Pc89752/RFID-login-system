@@ -1,5 +1,5 @@
 server/__pycache__/
-server/myenv/
+server/server_env/
 
 client/*/bin/
 client/*/obj/

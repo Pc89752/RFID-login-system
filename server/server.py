@@ -47,7 +47,10 @@ def handle_close_report():
     now = datetime.now()
     leaveTime = now.strftime("%Y-%m-%d, %H:%M:%S")
     record_db.update_DB("records", usageRecordID, [("leaveTime", leaveTime)])
-    record_db.delete_tuple("ComputerUsage",jsonData["StudentId"])
+    result = record_db.getTuple("records", usageRecordID)
+    # FIXME: get studentID from the DB
+    record_db.delete_tuple("ComputerUsage", result[2])
+    return {}
 
 def handle_account_login(computer_usage_db, info_db, jsonData):
     # get username and password
@@ -70,7 +73,7 @@ def handle_account_login(computer_usage_db, info_db, jsonData):
     if not valid_password:
         return 2, None
     
-    usageRecordID = computer_usage_db.rowCount("ComputerUsage")
+    usageRecordID = computer_usage_db.rowCount("records")
     now = datetime.now()
     loginTime = now.strftime("%Y-%m-%d, %H:%M:%S")
     computer_usage_db.insertTuples("ComputerUsage", [[sID]])
