@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.002.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "client", "client", "{57172351-0986-4B3D-A896-7BE5100641B8}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BGService", "client\BGService\BGService.csproj", "{AA76A479-FB97-4666-9A0F-13CEAE548BB7}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LoginUI", "client\UI\LoginUI.csproj", "{DB52044B-E13B-4486-A72C-3EBAF52F5FA1}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AA76A479-FB97-4666-9A0F-13CEAE548BB7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AA76A479-FB97-4666-9A0F-13CEAE548BB7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AA76A479-FB97-4666-9A0F-13CEAE548BB7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AA76A479-FB97-4666-9A0F-13CEAE548BB7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DB52044B-E13B-4486-A72C-3EBAF52F5FA1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DB52044B-E13B-4486-A72C-3EBAF52F5FA1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DB52044B-E13B-4486-A72C-3EBAF52F5FA1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DB52044B-E13B-4486-A72C-3EBAF52F5FA1}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{AA76A479-FB97-4666-9A0F-13CEAE548BB7} = {57172351-0986-4B3D-A896-7BE5100641B8}
+		{DB52044B-E13B-4486-A72C-3EBAF52F5FA1} = {57172351-0986-4B3D-A896-7BE5100641B8}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {7CD7B795-528F-48DF-9BF6-40D12482774D}
+	EndGlobalSection
+EndGlobal

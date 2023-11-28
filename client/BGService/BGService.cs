@@ -36,10 +36,8 @@ public sealed class BGService
                 await client.PostAsync(_serverUrl, new StringContent(payload));
             }
         }
-        // catch (Exception ex)
         catch (Exception)
         {
-            // logger.Error(ex, "An exception occurred during returning close report", ex.ToString());
         }
 
     }
@@ -66,13 +64,11 @@ public sealed class BGService
             try
             {
                 byte[] dataArr = new byte[4];
-                await pipeServer.ReadAsync(dataArr, 0 , 4);
+                await pipeServer.ReadAsync(dataArr.AsMemory(0, 4));
                 value = BitConverter.ToInt32(dataArr);
             }
-            // catch (Exception ex)
             catch (Exception)
             {
-                // Program._logger.Error(ex, "An error occured during reading value from pipe", ex.Message);
                 break;
             }
             return value;

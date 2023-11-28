@@ -31,9 +31,9 @@ namespace LoginUI
             Padding = new Padding(50);
             this.SuspendLayout();
 
-            // XXX: testing
+            // XXX: Uncomment this line during formal operation
             // this.TopMost = true;
-            // this.ControlBox=false;
+            this.ControlBox=false;
             this.FormBorderStyle = FormBorderStyle.None;
             this.WindowState = FormWindowState.Maximized;
 
@@ -107,7 +107,7 @@ namespace LoginUI
             if (e.CloseReason == CloseReason.UserClosing)
             {
                 // XXX: Testing
-                // e.Cancel = true;
+                e.Cancel = true;
             }
         }
 
