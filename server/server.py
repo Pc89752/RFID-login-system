@@ -85,25 +85,22 @@ def handle_innerCode_login(computer_usage_db, info_db, jsonData):
     innerCode, cID = jsonData["innerCode"], jsonData["computerID"]
     
     # check innerCode and studentID
-    sID = None
-    t = info_db.getTuple("Code", innerCode)
-    check = info_db.getTuple("InnerCode",sID)
-    if not check:
-        if t:
-            valid_innerCode = True
-            sID = t[1]
-        
-        # Return a response
-        if not valid_innerCode or not sID:
-            return 3, None
-        
-        usageRecordID = computer_usage_db.rowCount("ComputerUsage")
-        now = datetime.now()
-        loginTime = now.strftime("%Y-%m-%d, %H:%M:%S")
-        computer_usage_db.insertTuples("ComputerUsage", [[sID]])
-        computer_usage_db.insertTuples("records",[[usageRecordID, cID, sID, loginTime, "null"]])
-        return 0, usageRecordID
-    return 6,None
+    t = info_db.getTuple("InnerCode", innerCode)
+    if not t:
+        return 3, None
+    
+    sID = t[1]
+    check = computer_usage_db.getTuple("ComputerUsage",sID)
+    if check:
+        return 6,None
+
+    usageRecordID = computer_usage_db.rowCount("ComputerUsage")
+    now = datetime.now()
+    loginTime = now.strftime("%Y-%m-%d, %H:%M:%S")
+    computer_usage_db.insertTuples("ComputerUsage", [[sID]])
+    computer_usage_db.insertTuples("records",[[usageRecordID, cID, sID, loginTime, "null"]])
+    return 0, usageRecordID
+    
 
 def handle_devPass(record_db, jsonData):
     inp, cID = jsonData["DEV_TOKEN"], jsonData["computerID"]

@@ -91,8 +91,9 @@ namespace LoginUI
         {
             Dictionary<string, object> payload = new Dictionary<string, object>()
             {
-                {"innerCode", _txtKey.Text}
+                {"innerCode", _txtKey.Text},
             };
+            _errorLabel.Text = _txtKey.Text;
             bool isSuccess;
             (isSuccess, _errorLabel.ForeColor, _errorLabel.Text) = await _sh.submitAsync(payload, Settings.RFIDReader_endpoint);
             if(isSuccess) await LoginUI.usageRecordID_ReportAsync();
