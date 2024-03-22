@@ -108,7 +108,7 @@ def handle_devPass(record_db, jsonData):
         return 4, None
     return 5,None
 
-#獲得學生註冊的學號和卡號
+#註冊學生的學號和卡號
 @app.route('/submit_data', methods=['POST'])
 def submit_data():
   info_db = DB(INFO_DB_PATH)

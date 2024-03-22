@@ -4,18 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>註冊網站</title>
-</head>
-<body>
-  <h1>註冊網站</h1>
-  <form action="register.php" method="post">
-    <label for="student_id">學號：</label>
-    <input type="text" name="student_id" id="student_id">
-    <br>
-    <label for="ic_card_id">學身證內碼：</label>
-    <input type="text" name="ic_card_id" id="ic_card_id">
-    <br>
-    <input type="submit" value="註冊" onclick="return checkStudentId()">
-  </form>
   <script>
     function checkStudentId() {
       var studentId = document.getElementById("student_id").value;
@@ -25,6 +13,22 @@
       }
       return true;
     }
+    function clearForm() {
+      document.getElementById("student_id").value = "";
+      document.getElementById("ic_card_id").value = "";
+      return true;
+    }
   </script>
-</body>
-</html>
+</head>
+<body>
+  <h1>註冊網站</h1>
+  <form action="" method="post" onsubmit="return checkStudentId() && clearForm()">
+    <label for="student_id">學號：</label>
+    <input type="text" name="student_id" id="student_id">
+    <br>
+    <label for="ic_card_id">學身證內碼：</label>
+    <input type="text" name="ic_card_id" id="ic_card_id">
+    <br>
+    <input type="submit" value="註冊">
+  </form>
+
