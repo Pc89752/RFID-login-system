@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, render_template
 import json
 from DB import DB
 from pathlib import Path
@@ -115,7 +115,13 @@ def submit_data():
   # 從表單資料中獲取學號和卡號
   student_id = request.form['student_id']
   ic_card_id = request.form['ic_card_id']
-  info_db.insertTuples("Inner_code",[(ic_card_id,student_id)])
+  print(student_id, ic_card_id)
+  info_db.insertTuples("InnerCode", [[ic_card_id,student_id]])
+  return render_template('registerWeb.html')
+
+@app.route('/register', methods=['GET'])
+def register():
+    return render_template('registerWeb.html')
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)

@@ -13,16 +13,11 @@
       }
       return true;
     }
-    function clearForm() {
-      document.getElementById("student_id").value = "";
-      document.getElementById("ic_card_id").value = "";
-      return true;
-    }
   </script>
 </head>
 <body>
   <h1>註冊網站</h1>
-  <form action="" method="post" onsubmit="return checkStudentId() && clearForm()">
+  <form action="submit_data" method="post" onsubmit="return checkStudentId()">
     <label for="student_id">學號：</label>
     <input type="text" name="student_id" id="student_id">
     <br>
