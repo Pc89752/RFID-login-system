@@ -108,5 +108,14 @@ def handle_devPass(record_db, jsonData):
         return 4, None
     return 5,None
 
+#註冊學生的學號和卡號
+@app.route('/submit_data', methods=['POST'])
+def submit_data():
+  info_db = DB(INFO_DB_PATH)
+  # 從表單資料中獲取學號和卡號
+  student_id = request.form['student_id']
+  ic_card_id = request.form['ic_card_id']
+  info_db.insertTuples("Inner_code",[(ic_card_id,student_id)])
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
