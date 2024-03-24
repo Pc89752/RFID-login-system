@@ -109,22 +109,21 @@ def handle_devPass(record_db, jsonData):
     return 5,None
 
 #註冊學生的學號和卡號
-@app.route('/submit_data', methods=['POST'])
-def submit_data():
+@app.route('/register', methods=['POST'])
+def register_post():
   info_db = DB(INFO_DB_PATH)
   # 從表單資料中獲取學號和卡號
   student_id = request.form['student_id']
   ic_card_id = request.form['ic_card_id']
-#   print(student_id, ic_card_id)
-#   if not(info_db.find_pk_col("InnerCode",ic_card_id)):
+  print(student_id, ic_card_id)
   if info_db.find_touple("InnerCode",ic_card_id):
-      return render_template('registerWeb.html',idIsRepeat = "true")
+    return {"success": False}
   
   info_db.insertTuples("InnerCode", [[ic_card_id,student_id]])
-  return render_template('registerWeb.html')
+  return {"success": True, "student_id": student_id}
 
 @app.route('/register', methods=['GET'])
-def register():
+def register_get():
     return render_template('registerWeb.html')
 
 if __name__ == '__main__':
