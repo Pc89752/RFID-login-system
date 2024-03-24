@@ -148,7 +148,23 @@ class DB():
         except Exception as e:
             print(e.with_traceback())
             return None
-        
+    
+    def find_touple(self,table_name,pk):
+        cursor = self.conn.cursor()
+        try:
+            pk_col = self.find_pk_col(table_name)
+            query = f"SELECT * FROM {table_name} WHERE {pk_col} = '{pk}'"
+            cursor.execute(query)
+            # cursor.execute(query, pk) 
+
+            # 檢查是否存在結果
+            result = cursor.fetchone()
+
+            return True if result is not None else False
+        except Exception as e:
+            print(e.with_traceback())
+            return False
+          
     def delete_tuple(self,table_name,pk):
         cursor = self.conn.cursor()
         try:

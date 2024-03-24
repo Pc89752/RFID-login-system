@@ -115,7 +115,11 @@ def submit_data():
   # 從表單資料中獲取學號和卡號
   student_id = request.form['student_id']
   ic_card_id = request.form['ic_card_id']
-  print(student_id, ic_card_id)
+#   print(student_id, ic_card_id)
+#   if not(info_db.find_pk_col("InnerCode",ic_card_id)):
+  if not(info_db.find_touple("InnerCode",ic_card_id)):
+      return render_template('registerWeb.html',idIsRepeat = True)
+  
   info_db.insertTuples("InnerCode", [[ic_card_id,student_id]])
   return render_template('registerWeb.html')
 
