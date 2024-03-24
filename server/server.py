@@ -117,8 +117,8 @@ def submit_data():
   ic_card_id = request.form['ic_card_id']
 #   print(student_id, ic_card_id)
 #   if not(info_db.find_pk_col("InnerCode",ic_card_id)):
-  if not(info_db.find_touple("InnerCode",ic_card_id)):
-      return render_template('registerWeb.html',idIsRepeat = True)
+  if info_db.find_touple("InnerCode",ic_card_id):
+      return render_template('registerWeb.html',idIsRepeat = "true")
   
   info_db.insertTuples("InnerCode", [[ic_card_id,student_id]])
   return render_template('registerWeb.html')
