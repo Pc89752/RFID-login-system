@@ -11,6 +11,10 @@
         alert("學號必須是 9 位數，且第一位字母必須是大寫的 U");
         return false;
       }
+      if({{idIsRepeat}}==true){
+        alert("不可重複註冊學生證")
+        return false;
+      }
       return true;
     }
   </script>
