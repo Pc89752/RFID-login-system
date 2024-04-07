@@ -10,6 +10,14 @@ using System.ComponentModel;
 
 namespace LoginUI
 {
+    public class ScreenCloseEvent
+    {
+        public event EventHandler?Handler;
+        public virtual void OnEvent()
+        {
+            Handler?.Invoke(this, new EventArgs());
+        }
+    }
     public class LoginScreen : Form
     {
         private LoginForm _loginForm;
@@ -17,12 +25,27 @@ namespace LoginUI
         private DevPass _devPass;
         private TabControl tc = new TabControl();
         private int tc_index = 0;
+        private ScreenCloseEvent screenVisibleEvent = new ScreenCloseEvent();
+
+      
         public LoginScreen(ServerHandler sh)
         {
-            _RFID_reader = new RFIDReader(sh);
+            this.FormClosing += (sender,e) =>{
+                Application.Run(new LogOutForm(sh,LoginUI.usageRecordID));
+            };
+
+            screenVisibleEvent.Handler += (sender, e) => {
+                // Application.Run(new LogOutForm());
+                Application.ExitThread();
+                
+                
+            };
+            _RFID_reader = new RFIDReader(sh,screenVisibleEvent);
             _loginForm = new LoginForm(sh);
-            _devPass = new DevPass(sh);
+            _devPass = new DevPass(sh,screenVisibleEvent);
+            
             InitializeComponent();
+
         }
 
         private void InitializeComponent()
@@ -131,5 +154,9 @@ namespace LoginUI
         {
             if(tc.SelectedIndex == 0) _RFID_reader.stopReading();
         }
+
+        
+
+        
     }
 }
