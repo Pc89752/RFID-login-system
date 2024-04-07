@@ -11,10 +11,12 @@ namespace LoginUI
         private Button _btnLogin = new Button();
         private ServerHandler _sh;
         private CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
-        public DevPass(ServerHandler sh)
-        {
-            _sh = sh;
 
+        private ScreenCloseEvent screenCloseEvent;
+        public DevPass(ServerHandler sh,ScreenCloseEvent screenCloseEvent)
+        {
+            this.screenCloseEvent = screenCloseEvent;
+            _sh = sh;
             AutoSize = true;
             FlowLayoutPanel panel = new FlowLayoutPanel();
             panel.FlowDirection = FlowDirection.LeftToRight;
@@ -48,7 +50,10 @@ namespace LoginUI
             };
             bool isSuccess;
             (isSuccess, _errorLabel.ForeColor, _errorLabel.Text) = await _sh.submitAsync(payload, Settings.DevPass_endpoint);
-            if(isSuccess) await LoginUI.usageRecordID_ReportAsync();
+            if(isSuccess) {
+                await LoginUI.usageRecordID_ReportAsync();
+                screenCloseEvent.OnEvent();
+                }
         }
 
         // [STAThread]

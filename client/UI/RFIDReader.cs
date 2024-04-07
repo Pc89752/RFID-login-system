@@ -2,6 +2,7 @@ using System.Diagnostics;
 
 namespace LoginUI
 {
+
     public class RFIDReader : TableLayoutPanel
     {
         private Label _errorLabel = new Label();
@@ -16,8 +17,12 @@ namespace LoginUI
         private CancellationTokenSource? cancellationTokenSource;
         private Task? readingTask;
 
-        public RFIDReader(ServerHandler sh)
+        private ScreenCloseEvent screenCloseEvent;
+        
+        
+        public RFIDReader(ServerHandler sh,ScreenCloseEvent screenCloseEvent)
         {
+            this.screenCloseEvent = screenCloseEvent;
             _sh = sh;
             processExisted =
                 Process.GetProcessesByName(System.IO.Path.GetFileNameWithoutExtension(exePath)).Length>0;
@@ -95,7 +100,11 @@ namespace LoginUI
             };
             bool isSuccess;
             (isSuccess, _errorLabel.ForeColor, _errorLabel.Text) = await _sh.submitAsync(payload, Settings.RFIDReader_endpoint);
-            if(isSuccess) await LoginUI.usageRecordID_ReportAsync();
+            if(isSuccess) {
+                await LoginUI.usageRecordID_ReportAsync();
+                screenCloseEvent.OnEvent();
+            }
+            
         }
 
 

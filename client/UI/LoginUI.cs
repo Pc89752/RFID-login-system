@@ -8,6 +8,7 @@ namespace LoginUI
     {
         private static readonly ServerHandler sh;
         private static readonly LoginScreen loginScreen;
+        private static readonly LogOutForm logOutForm;
         public static int usageRecordID = -1;
         // Set Global to communicate within sessions
         private const string PIPE_NAME = @"\\.\pipe\Global\LoginSystem_UI";
@@ -22,13 +23,14 @@ namespace LoginUI
                 .CreateLogger();
             sh = new ServerHandler(Settings.URI, Settings.ComputerName);
             loginScreen = new LoginScreen(sh);
+            logOutForm = new LogOutForm(sh,usageRecordID);
         }
 
         public static async Task usageRecordID_ReportAsync()
         {
             await sendDataAsync(usageRecordID);
-            logger.Information("Process exited gracefully");
-            Application.Exit();
+            // logger.Information("Process exited gracefully");
+            // Application.Exit();
         }
 
         private static async Task sendDataAsync(int data)
@@ -50,14 +52,20 @@ namespace LoginUI
             }
 
         }
-
+        
         [STAThread]
         static void Main()
         {
             Application.EnableVisualStyles();
             // Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(loginScreen);
-
+            // Application.Run(loginScreen);
+            while(true){
+                Application.Run(loginScreen);
+                Application.Run(logOutForm);
+            }
+        
+            
+            
             // // XXX: Testing
             // if(usageRecordID == -1)
             // {

@@ -15,6 +15,8 @@ namespace LoginUI
         public static readonly string DevPass_endpoint;
         public static readonly string NFcCode_path;
 
+        public static readonly string CloseReport_endpoint;
+
         static Settings()
         {
             string full_path = Environment.GetFolderPath(Environment.SpecialFolder.CommonDocuments) + SETTINGS_PATH;
@@ -33,6 +35,7 @@ namespace LoginUI
                 RFIDReader_endpoint = GetValue<string>(data, "URL.endpoint.RFIDReader")!;
                 LoginForm_endpoint = GetValue<string>(data, "URL.endpoint.LoginForm")!;
                 DevPass_endpoint = GetValue<string>(data, "URL.endpoint.DevPass")!;
+                CloseReport_endpoint = GetValue<string>(data, "URL.endpoint.CloseReport")!;
                 NFcCode_path = GetValue<string>(data, "NFcCode_path")!;
             }
         }
