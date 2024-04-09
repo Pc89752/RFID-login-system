@@ -62,6 +62,7 @@ namespace LoginUI{
             catch (Exception)
             {
             }
+            LoginUI.usageRecordID = -1;
             screenCloseEvent.ShowLoginForm();
             Application.ExitThread();
         }
