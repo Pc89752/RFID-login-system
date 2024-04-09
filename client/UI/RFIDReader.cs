@@ -20,7 +20,7 @@ namespace LoginUI
         private ScreenCloseEvent screenCloseEvent;
         
         
-        public RFIDReader(ServerHandler sh,ScreenCloseEvent screenCloseEvent)
+        public RFIDReader(ServerHandler sh, ScreenCloseEvent screenCloseEvent)
         {
             this.screenCloseEvent = screenCloseEvent;
             _sh = sh;
@@ -102,7 +102,7 @@ namespace LoginUI
             (isSuccess, _errorLabel.ForeColor, _errorLabel.Text) = await _sh.submitAsync(payload, Settings.RFIDReader_endpoint);
             if(isSuccess) {
                 await LoginUI.usageRecordID_ReportAsync();
-                screenCloseEvent.OnEvent();
+                screenCloseEvent.HideLoginForm();
             }
             
         }

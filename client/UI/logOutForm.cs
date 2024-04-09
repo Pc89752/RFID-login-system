@@ -9,18 +9,13 @@ namespace LoginUI{
         private Button button1 = new Button() ;
 
         private ServerHandler _sh;
-        private LoginScreen screen;
-
-        private int usageRecordID;
-        
+        private ScreenCloseEvent screenCloseEvent;
         private readonly static string _serverUrl = Settings.URI + Settings.CloseReport_endpoint;
     // TODO: Get the computer ID
-        public LogOutForm(ServerHandler sh,int usageRecordID)
+        public LogOutForm(ServerHandler sh, ScreenCloseEvent screenCloseEvent)
         {
-            this.usageRecordID = usageRecordID;
+            this.screenCloseEvent = screenCloseEvent;
             _sh = sh;
-            screen = new LoginScreen(_sh);
-           
             InitializeComponent();
         }
 
@@ -57,7 +52,7 @@ namespace LoginUI{
                 {
                     Dictionary<string, string> dict = new Dictionary<string, string>()
                     {
-                        {"usageRecordID", Convert.ToString(usageRecordID)}
+                        {"usageRecordID", Convert.ToString(LoginUI.usageRecordID)}
                     };
                     string payload = JsonConvert.SerializeObject(dict);
 
@@ -67,8 +62,8 @@ namespace LoginUI{
             catch (Exception)
             {
             }
-            this.Close();
-            
+            screenCloseEvent.ShowLoginForm();
+            Application.ExitThread();
         }
 
     private void preventUserClosing(object? sender, FormClosingEventArgs e)

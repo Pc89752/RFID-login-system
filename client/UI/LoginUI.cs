@@ -8,7 +8,7 @@ namespace LoginUI
     {
         private static readonly ServerHandler sh;
         private static readonly LoginScreen loginScreen;
-        private static readonly LogOutForm logOutForm;
+        // private static readonly LogOutForm logOutForm;
         public static int usageRecordID = -1;
         // Set Global to communicate within sessions
         private const string PIPE_NAME = @"\\.\pipe\Global\LoginSystem_UI";
@@ -23,7 +23,7 @@ namespace LoginUI
                 .CreateLogger();
             sh = new ServerHandler(Settings.URI, Settings.ComputerName);
             loginScreen = new LoginScreen(sh);
-            logOutForm = new LogOutForm(sh,usageRecordID);
+            // logOutForm = new LogOutForm(sh, screenCloseEvent);
         }
 
         public static async Task usageRecordID_ReportAsync()
@@ -58,11 +58,8 @@ namespace LoginUI
         {
             Application.EnableVisualStyles();
             // Application.SetCompatibleTextRenderingDefault(false);
-            // Application.Run(loginScreen);
-            while(true){
-                Application.Run(loginScreen);
-                Application.Run(logOutForm);
-            }
+            Application.Run(loginScreen);
+            // Application.Run(logOutForm);
         
             
             

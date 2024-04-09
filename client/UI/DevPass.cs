@@ -52,8 +52,8 @@ namespace LoginUI
             (isSuccess, _errorLabel.ForeColor, _errorLabel.Text) = await _sh.submitAsync(payload, Settings.DevPass_endpoint);
             if(isSuccess) {
                 await LoginUI.usageRecordID_ReportAsync();
-                screenCloseEvent.OnEvent();
-                }
+                screenCloseEvent.HideLoginForm();
+            }
         }
 
         // [STAThread]

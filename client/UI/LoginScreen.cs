@@ -10,14 +10,6 @@ using System.ComponentModel;
 
 namespace LoginUI
 {
-    public class ScreenCloseEvent
-    {
-        public event EventHandler?Handler;
-        public virtual void OnEvent()
-        {
-            Handler?.Invoke(this, new EventArgs());
-        }
-    }
     public class LoginScreen : Form
     {
         private LoginForm _loginForm;
@@ -25,25 +17,23 @@ namespace LoginUI
         private DevPass _devPass;
         private TabControl tc = new TabControl();
         private int tc_index = 0;
-        private ScreenCloseEvent screenVisibleEvent = new ScreenCloseEvent();
-
-      
+        private ScreenCloseEvent screenCloseEvent = new ScreenCloseEvent();
         public LoginScreen(ServerHandler sh)
         {
-            this.FormClosing += (sender,e) =>{
-                Application.Run(new LogOutForm(sh,LoginUI.usageRecordID));
+            _RFID_reader = new RFIDReader(sh, screenCloseEvent);
+            _loginForm = new LoginForm(sh);
+            _devPass = new DevPass(sh, screenCloseEvent);
+
+            screenCloseEvent.Handler += (sender, e) =>
+            {
+                if (screenCloseEvent.ToLogin) Show();
+                else
+                {
+                    Hide();
+                    Task.Run(() => Application.Run(new LogOutForm(sh, screenCloseEvent)));
+                }
             };
 
-            screenVisibleEvent.Handler += (sender, e) => {
-                // Application.Run(new LogOutForm());
-                Application.ExitThread();
-                
-                
-            };
-            _RFID_reader = new RFIDReader(sh,screenVisibleEvent);
-            _loginForm = new LoginForm(sh);
-            _devPass = new DevPass(sh,screenVisibleEvent);
-            
             InitializeComponent();
 
         }
@@ -56,7 +46,7 @@ namespace LoginUI
 
             // XXX: Uncomment this line during formal operation
             // this.TopMost = true;
-            this.ControlBox=false;
+            this.ControlBox = false;
             this.FormBorderStyle = FormBorderStyle.None;
             this.WindowState = FormWindowState.Maximized;
 
@@ -84,8 +74,8 @@ namespace LoginUI
 
             // adding loginForm
             _loginForm.Anchor = AnchorStyles.None;
-            if(Screen.PrimaryScreen!=null)
-                _loginForm.Margin = new Padding(0, Screen.PrimaryScreen.Bounds.Height/4, 0, 0);
+            if (Screen.PrimaryScreen != null)
+                _loginForm.Margin = new Padding(0, Screen.PrimaryScreen.Bounds.Height / 4, 0, 0);
 
             // Adding login page to the tab
             TabPage loginPage = new TabPage();
@@ -137,26 +127,46 @@ namespace LoginUI
         private void tab_indexChanged(object? sender, EventArgs e)
         {
             // Before change
-            if(_RFID_reader!=null)
+            if (_RFID_reader != null)
             {
-                if(tc_index == 0) _RFID_reader.stopReading();
+                if (tc_index == 0) _RFID_reader.stopReading();
             }
             tc_index = tc.SelectedIndex;
 
             // After change
-            if(_RFID_reader!=null)
+            if (_RFID_reader != null)
             {
-                if(tc_index == 0) _RFID_reader.startReading();
+                if (tc_index == 0) _RFID_reader.startReading();
             }
         }
 
         private void cleaning(object? sender, FormClosingEventArgs e)
         {
-            if(tc.SelectedIndex == 0) _RFID_reader.stopReading();
+            if (tc.SelectedIndex == 0) _RFID_reader.stopReading();
         }
+    }
 
-        
-
-        
+    public class ScreenCloseEvent
+    {
+        private bool toLogin = true;
+        public bool ToLogin
+        {
+            get { return toLogin; }
+        }
+        public event EventHandler? Handler;
+        public void ShowLoginForm()
+        {
+            toLogin = true;
+            OnEvent();
+        }
+        public void HideLoginForm()
+        {
+            toLogin = false;
+            OnEvent();
+        }
+        public virtual void OnEvent()
+        {
+            Handler?.Invoke(this, new EventArgs());
+        }
     }
 }
