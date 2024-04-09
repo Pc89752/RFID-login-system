@@ -11,45 +11,43 @@ DEV_TOKEN = r"a!Qe*1!H/jgr8clv6yDQjaadi{I}C0B7Viwd}W1TsI=-f)lMWyHrm9V}Kx,2IF\1"
 PARDIR = str(Path(__file__).parent.absolute())
 COMPUTER_USAGE_DB_PATH = os.path.join(PARDIR, "ComputerUsage.db")
 INFO_DB_PATH = os.path.join(PARDIR, "StudentINFO.db")
+SUCCESS_CODE = [0, 5]
 
 @app.route('/submit/<action>', methods=['POST'])
 def submit(action):
     jsonData = json.loads(request.get_data(as_text=True))
-    record_db = DB(COMPUTER_USAGE_DB_PATH)
+    computer_usage_db = DB(COMPUTER_USAGE_DB_PATH)
     info_db = DB(INFO_DB_PATH)
 
     status_code = None
 
     # response
     if action == 'innerCode_login':
-        status_code, usageRecordID = handle_innerCode_login(record_db, info_db, jsonData)
+        status_code, usageRecordID = handle_innerCode_login(computer_usage_db, info_db, jsonData)
     elif action == 'account_login':
-        status_code, usageRecordID = handle_account_login(record_db, info_db, jsonData)
+        status_code, usageRecordID = handle_account_login(computer_usage_db, info_db, jsonData)
     elif action == 'devPass':
-        status_code, usageRecordID = handle_devPass(record_db, jsonData)
+        status_code, usageRecordID = handle_devPass(computer_usage_db, jsonData)
     else:
         return
     
     if status_code == None:
         return
     
-    if status_code != 0:
-        return {"status_code": status_code}
-    
-    return {"status_code": 0, "usageRecordID": usageRecordID}
+    if status_code in SUCCESS_CODE:
+        return {"status_code": 0, "usageRecordID": usageRecordID}
+    return {"status_code": status_code}
 
 @app.route('/closeReport', methods=['POST'])
 def handle_close_report():
     jsonData = json.loads(request.get_data(as_text=True))
-    record_db = DB(COMPUTER_USAGE_DB_PATH)
-    
+    computer_usage_db = DB(COMPUTER_USAGE_DB_PATH)
     usageRecordID =  jsonData["usageRecordID"]
     now = datetime.now()
     leaveTime = now.strftime("%Y-%m-%d, %H:%M:%S")
-    record_db.update_DB("records", usageRecordID, [("leaveTime", leaveTime)])
-    result = record_db.getTuple("records", usageRecordID)
-    # FIXME: get studentID from the DB
-    record_db.delete_tuple("ComputerUsage", result[2])
+    computer_usage_db.update_DB("records", usageRecordID, [("leaveTime", leaveTime)])
+    result = computer_usage_db.getTuple("records", usageRecordID)
+    computer_usage_db.delete_tuple("ComputerUsage", result[2])
     return {}
 
 def handle_account_login(computer_usage_db, info_db, jsonData):
@@ -94,7 +92,7 @@ def handle_innerCode_login(computer_usage_db, info_db, jsonData):
     if check:
         return 6,None
 
-    usageRecordID = computer_usage_db.rowCount("ComputerUsage")
+    usageRecordID = computer_usage_db.rowCount("records")
     now = datetime.now()
     loginTime = now.strftime("%Y-%m-%d, %H:%M:%S")
     computer_usage_db.insertTuples("ComputerUsage", [[sID]])
@@ -102,11 +100,15 @@ def handle_innerCode_login(computer_usage_db, info_db, jsonData):
     return 0, usageRecordID
     
 
-def handle_devPass(record_db, jsonData):
+def handle_devPass(computer_usage_db, jsonData):
     inp, cID = jsonData["DEV_TOKEN"], jsonData["computerID"]
+    usageRecordID = computer_usage_db.rowCount("records")
+    now = datetime.now()
+    loginTime = now.strftime("%Y-%m-%d, %H:%M:%S")
+    computer_usage_db.insertTuples("records", [[usageRecordID, cID, "DEV", loginTime, "null"]])
     if DEV_TOKEN != inp:
         return 4, None
-    return 5,None
+    return 5, usageRecordID
 
 #註冊學生的學號和卡號
 @app.route('/register', methods=['POST'])
