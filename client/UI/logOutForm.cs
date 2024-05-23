@@ -63,8 +63,9 @@ namespace LoginUI{
             {
             }
             LoginUI.usageRecordID = -1;
+            Hide();
             screenCloseEvent.ShowLoginForm();
-            Application.ExitThread();
+            // Application.ExitThread();
         }
 
     private void preventUserClosing(object? sender, FormClosingEventArgs e)
